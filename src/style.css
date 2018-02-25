@@ -1,0 +1,57 @@
+/* animations */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  100% { opacity: 1; }
+}
+.fade-in { animation-duration: 0.5s; animation-fill-mode: both; animation-name: fadeIn; }
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  100% { opacity: 0; }
+}
+.fade-out { animation-duration: 0.5s; animation-fill-mode: both; animation-name: fadeOut; }
+
+/* cookie law */
+
+#cookielaw { 
+	position: fixed; bottom: 0; left: 0; right: 0;
+	width: 100%; min-height: 3rem; z-index: 999;  opacity: 0;
+	background: black; color: white; padding: 0.75rem 1rem;
+	display: -webkit-box; display: -webkit-flex; display: -ms-flexbox; display: flex;
+	-webkit-flex-flow: row nowrap; -ms-flex-flow: row nowrap; flex-flow: row nowrap; 
+	-ms-flex-align: center; -webkit-align-items: center; -webkit-box-align: center; align-items: center; 
+	-webkit-justify-content: center; -moz-justify-content: center; justify-content: center;	
+}
+#cookielaw-msg { 
+	flex: 1 1 auto;
+}
+#cookielaw-btn { 
+	flex: 0 0 auto;
+	padding-left: 0.75rem; 
+}
+
+/* tooltips */
+
+.tooltip-parent { position: relative; }
+.tooltip-parent:hover .tooltip, .tooltip-on { display: block !important; }
+.tooltip { display: none; position: absolute; top: 100%; z-index: 800; }
+
+/* modals */
+
+.modal { 
+	opacity:0;
+	position: fixed; height: 100%; width: 100%; background-color: rgba(0,0,0,0.3); z-index: 900; 
+	display: -webkit-box; display: -webkit-flex; display: -ms-flexbox; display: flex;
+	-webkit-flex-flow: row nowrap; -ms-flex-flow: row nowrap; flex-flow: row nowrap;  
+	-ms-flex-align: center; -webkit-align-items: center; -webkit-box-align: center; align-items: center; 
+	-webkit-justify-content: center; -moz-justify-content: center; justify-content: center;
+}
+.modal-content { 
+	position: relative; z-index: 901; width: 90%; max-width: 600px; max-height: 80%; height: auto; padding: 1rem; background: white;
+}
+.modal-close { 
+	position: absolute; top:0px; right: 0px; 
+	width: 1.5rem; height: 1.5rem;
+	cursor: pointer; 
+}
