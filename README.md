@@ -22,7 +22,9 @@ There are two files you need to include:
 <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
 ```
 
-2 tat.min.js - TAT.js itself
+2. TAT.js itself:
+  a) tat.min.js - this is the better browser compatibility version, minified.
+  b) tat.let.js - this is the version that uses javascript "let" variables, which still have only about 92% support.
 
 **Hooks**
 

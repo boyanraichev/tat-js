@@ -34,11 +34,11 @@ var tat = {
     
     modalShow: function(event) {
 		event.preventDefault();
-		var modalClicked = this;
-		var modalID = modalClicked.dataset.modal;
-		var modalContent = modalClicked.dataset.modalContent;
+		let modalClicked = this;
+		let modalID = modalClicked.dataset.modal;
+		let modalContent = modalClicked.dataset.modalContent;
 		if (modalContent==undefined || modalContent.length < 1) { 
-			var modalGet = document.getElementById(this.dataset.modalGet);
+			let modalGet = document.getElementById(this.dataset.modalGet);
 			if (modalGet) { 
 				modalContent = modalGet.innerHTML;
 			}
@@ -48,7 +48,7 @@ var tat = {
 
 	
 	modal: function(modalID,modalContent,elementClicked) {
-		var modal = document.querySelector('.modal');
+		let modal = document.querySelector('.modal');
 		if (!modal) {
 			modal = document.createElement('div');
 			modal.id = modalID;
@@ -62,7 +62,7 @@ var tat = {
 		}
  		modalContentDiv.innerHTML = modalContent;
 		document.body.classList.add('modal-open');
-		var modalCloseDiv = document.createElement('div');
+		let modalCloseDiv = document.createElement('div');
 		modalCloseDiv.classList.add('modal-close','js-modal-close');
 		modalContentDiv.prepend(modalCloseDiv);
 		modal.classList.add('fade-in');
@@ -95,9 +95,9 @@ var tat = {
 	},
 
 	modalOnListener: function() {
-		var modalOn = document.querySelector('.js-modal-on');
+		let modalOn = document.querySelector('.js-modal-on');
 		if (modalOn) {
-			var delay = parseInt(modalOn.dataset.delay) || 0;
+			let delay = parseInt(modalOn.dataset.delay) || 0;
 			setTimeout(function() {
 		    	modalOn.click();
 		    }, delay);
@@ -105,7 +105,7 @@ var tat = {
 	},
 	
 	toggleListener: function() {
-		var toggles = document.querySelectorAll('.js-toggle');
+		let toggles = document.querySelectorAll('.js-toggle');
 		Array.from(toggles).forEach(toggle => {
 		    toggle.addEventListener('click',tat.toggle);
 		});
@@ -113,11 +113,11 @@ var tat = {
 
 	toggle: function(event) {
 		event.preventDefault();
-		var toggle = document.getElementById(this.dataset.toggle);
+		let toggle = document.getElementById(this.dataset.toggle);
 		if (toggle) {
 			this.classList.toggle('toggled');
 			toggle.classList.toggle('opened');
-			var bodyClass = this.dataset.bodyClass;
+			let bodyClass = this.dataset.bodyClass;
 			if (bodyClass!=undefined) {
 				document.body.classList.toggle(bodyClass);
 			}
@@ -125,7 +125,7 @@ var tat = {
 	},
 
 	tabsListener: function() {
-		var tabs = document.querySelectorAll('.js-tab');
+		let tabs = document.querySelectorAll('.js-tab');
 		Array.from(tabs).forEach(tab => {
 		    tab.addEventListener('click',tat.tabs);
 		});
@@ -133,26 +133,26 @@ var tat = {
 	
 	tabs: function(event) {
 		event.preventDefault();
-		var menuTabs = document.querySelectorAll('#'+this.dataset.menu+' .js-tab.active');
+		let menuTabs = document.querySelectorAll('#'+this.dataset.menu+' .js-tab.active');
 		Array.from(menuTabs).forEach(menuTab => {
 		    menuTab.classList.remove('active');
 		});
 		this.classList.add('active');
-		var wrapTabs = document.querySelectorAll('#'+this.dataset.wrap+' .tab.active');
+		let wrapTabs = document.querySelectorAll('#'+this.dataset.wrap+' .tab.active');
 		Array.from(wrapTabs).forEach(wrapTab => {
 		    wrapTab.classList.remove('active');
 		});
-		var tab = document.getElementById(this.dataset.tab);
+		let tab = document.getElementById(this.dataset.tab);
 		tab.classList.add('active');
 	},
 
 	tooltipListener: function() {
-		var tooltips = document.querySelectorAll('.js-tooltip');
+		let tooltips = document.querySelectorAll('.js-tooltip');
 		Array.from(tooltips).forEach(tooltip => {
 		    tooltip.addEventListener('mouseenter',tat.tooltipOn);
 		    tooltip.addEventListener('mouseleave',tat.tooltipOff);
 		});
-		var tooltipsFocus = document.querySelectorAll('.js-tooltip-focus');
+		let tooltipsFocus = document.querySelectorAll('.js-tooltip-focus');
 		Array.from(tooltipsFocus).forEach(tooltipFocus => {
 		    tooltipFocus.addEventListener('focus',tat.tooltipOn);
 		    tooltipFocus.addEventListener('blur',tat.tooltipOff);
@@ -162,7 +162,7 @@ var tat = {
 	tooltipOn: function(event) {
 		event.preventDefault();
 		this.classList.add('tooltipped');
-		var tooltip = document.getElementById(this.dataset.tooltip);
+		let tooltip = document.getElementById(this.dataset.tooltip);
 		if (tooltip) {
 			tooltip.classList.add('opened');
 		}
@@ -171,14 +171,14 @@ var tat = {
 	tooltipOff: function(event) {
 		event.preventDefault();
 		this.classList.remove('tooltipped');
-		var tooltip = document.getElementById(this.dataset.tooltip);
+		let tooltip = document.getElementById(this.dataset.tooltip);
 		if (tooltip) {
 			tooltip.classList.remove('opened');
 		}
 	},
 	
 	addRowsListener: function() {
-		var addRows = document.querySelectorAll('.js-add-row');
+		let addRows = document.querySelectorAll('.js-add-row');
 		Array.from(addRows).forEach(addRow => {
 		    addRow.addEventListener('click',tat.addRow);
 		});
@@ -186,10 +186,10 @@ var tat = {
 		
 	addRow: function(event) {
 		event.preventDefault();
-		var table = document.getElementById(this.dataset.table);
+		let table = document.getElementById(this.dataset.table);
 		if (table) {
-			var prototype = this.dataset.prototype;
-			var lastRow = table.querySelector('.row:last-child');
+			let prototype = this.dataset.prototype;
+			let lastRow = table.querySelector('.row:last-child');
 			if (lastRow.dataset.key === undefined) {
 				var key = 1;
 			} else {
@@ -199,7 +199,7 @@ var tat = {
 			table.insertAdjacentHTML('beforeend', prototype);
 			tat.delRowsListener();
 			tat.toggleListener();
-			var callback = this.dataset.callback;
+			let callback = this.dataset.callback;
 			if (callback!==undefined) {
 				var x = eval(callback);
 				if (typeof x == 'function') {
@@ -210,7 +210,7 @@ var tat = {
 	},
 	
 	delRowsListener: function() {
-		var delRows = document.querySelectorAll('.js-del-row');
+		let delRows = document.querySelectorAll('.js-del-row');
 		Array.from(delRows).forEach(delRow => {
 		    delRow.addEventListener('click',tat.delRow);
 		});
@@ -218,13 +218,13 @@ var tat = {
 	
 	delRow: function(event) {
 		event.preventDefault();
-		var row = this.closest('.row');
+		let row = this.closest('.row');
 		row.classList.add('fade-out');
 		setTimeout(function(){ row.remove(); }, 500);
 	},
 
 	scrollToListener: function() {
-		var scrolls = document.querySelectorAll('.js-scroll');
+		let scrolls = document.querySelectorAll('.js-scroll');
 		Array.from(scrolls).forEach(scroll => {
 		    scroll.addEventListener('click',tat.scrollTo);
 		});
@@ -232,15 +232,15 @@ var tat = {
 	
 	scrollTo: function(event) {
 		event.preventDefault();
-		var offset = this.dataset.offset;
+		let offset = this.dataset.offset;
 			if (offset==undefined) { offset=60; }
-		var target = document.getElementById(this.dataset.scrollto);
+		let target = document.getElementById(this.dataset.scrollto);
 		if (target) {
 			target.scrollIntoView({ 
 				behavior: 'smooth' 
 			});
 /*
-			var scroll = tat.scrollPosition(target) - offset;
+			let scroll = tat.scrollPosition(target) - offset;
 // 			window.scroll(0,scroll);
 			window.scroll({
 				top: scroll, 
@@ -252,10 +252,10 @@ var tat = {
 	},
 	
 	scrollPosition: function(el) {
-		var yPos = 0;
+		let yPos = 0;
 		while (el) {
 			if (el.tagName == "BODY") {
-				var yScroll = el.scrollTop || document.documentElement.scrollTop;
+				let yScroll = el.scrollTop || document.documentElement.scrollTop;
 				yPos += (el.offsetTop - yScroll + el.clientTop);
 			} else {
 				yPos += (el.offsetTop - el.scrollTop + el.clientTop);
@@ -266,7 +266,7 @@ var tat = {
 	},
 	
 	confirmListener: function() {
-		var confirms = document.querySelectorAll('.js-confirm');
+		let confirms = document.querySelectorAll('.js-confirm');
 		Array.from(confirms).forEach(confirm => {
 		    confirm.addEventListener('click',tat.confirm);
 		});
@@ -284,7 +284,7 @@ var tat = {
 	},
 	
 	inputListener: function() {
-		var inputs = document.querySelectorAll('input, select, textarea');
+		let inputs = document.querySelectorAll('input, select, textarea');
 		Array.from(inputs).forEach(input => {
 		    input.addEventListener('focus',function(){
 			    this.classList.add('has-input');
@@ -304,14 +304,14 @@ var tat = {
 				var cookie_btn = document.body.dataset.cookieBtn;
 		  		var cookie_msg = document.body.dataset.cookieMsg;
 		  		
-		  		var cookieDiv = document.createElement('div');
+		  		let cookieDiv = document.createElement('div');
 		  		cookieDiv.id = 'cookielaw';
-		  		var cookieMsgDiv = document.createElement('div');
+		  		let cookieMsgDiv = document.createElement('div');
 		  		cookieMsgDiv.id = 'cookielaw-msg';
 		  		cookieMsgDiv.innerHTML = cookie_msg;
-		  		var cookieBtnDiv = document.createElement('div');
+		  		let cookieBtnDiv = document.createElement('div');
 		  		cookieBtnDiv.id = 'cookielaw-btn';
-		  		var cookieBtnBtn = document.createElement('button');
+		  		let cookieBtnBtn = document.createElement('button');
 		  		cookieBtnBtn.id = 'cookiewlaw-accept';
 		  		cookieBtnBtn.innerHTML = cookie_btn;
 		  		
