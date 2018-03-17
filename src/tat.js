@@ -7,6 +7,11 @@ var tat = {
 	
 	modalCloseHook: {},
 	
+	lang: {
+		ok: 'OK',
+		cancel: 'Cancel',
+	}
+	
 	initialize: function() {
 		this.listeners();
 		this.cookie();
@@ -66,8 +71,8 @@ var tat = {
 		modalCloseDiv.classList.add('modal-close','js-modal-close');
 		modalContentDiv.prepend(modalCloseDiv);
 		modal.classList.add('fade-in');
-
-		modalCloseDiv.addEventListener('click',tat.modalClose);
+		
+		tat.modalCloseListeners();
 		modal.addEventListener('click',tat.modalClose,{'capture':false});
 		
 	    for (var i=0; i < tat.modalHooks.length; i++ ) {
@@ -77,6 +82,13 @@ var tat = {
 		    	}
 	    	}
 	    }
+	},
+	
+	modalCloseListeners: function() {
+		var closes = document.querySelectorAll('.js-modal-close');
+		Array.from(closes).forEach(close => {
+		    close.addEventListener('click',tat.modalClose);
+		});
 	},
 	
 	modalClose: function(event) {	
@@ -276,9 +288,15 @@ var tat = {
 		event.preventDefault();
 		var href = this.attr.href;
 		// build content
-		modalContent = $(this).data('text')+'';
-		// add OK listener
+		modalContent = this.dataset.text;
+		modalButtons = document.createElement('div');
+		modalButtons.className = 'modal-confirm';
 		
+		// add OK listener
+		var confirm = document.querySelect('js-confirm');
+		confirm.addEventListener('click',function() {
+			
+		});
 		// show dialog
 		tat.modal('confirm',modalContent,this);
 	},
@@ -342,58 +360,73 @@ tat.initialize();
 // scroll listener v.1.3
 var tatScroll = {
 
-	scrollHeight: 180,
+	scrollHeight: 0,
 	viewport: null,
 	scrollTop: null, 
-	isOn: false,
+	resizeIsOn: false,
+	stickyIsOn: false,
 			
 	initialize: function() {
-		/*
-		if ( $( '.js-inview' ).length ) {
-			tatScroll.listener();
-			$(document).ready(tatScroll.inview);
+		this.stickyListener();
+		this.inViewListener();
+	},
+
+	resizeListener: function() {
+		if (tatScroll.resizeIsOn==false) {
+			tatScroll.resizeIsOn = true;
+			tatScroll.viewport = window.innerHeight;
+			window.addEventListener('resize', function() {
+		        if (window.innerHeight!=tatScroll.viewport) {
+			        tatScroll.viewport = window.innerHeight;
+		        }
+		    }, true);
+		    tatScroll.scrollTop = window.scrollY;
 		}
-		if ( $( '.js-sticky' ).length ) {
-			tatScroll.listener();
-			if ($('.js-sticky').data('scrollheight')) { 
-				tatScroll.scrollHeight = $('.js-sticky').data('scrollheight');
-				if (tatScroll.scrollHeight==='touch') {
-					tatScroll.scrollHeight = $('.js-sticky').offset().top;
+	},
+	
+	stickyListener: function() {
+		var sticky = document.querySelector('.js-sticky');
+		if (sticky) {
+			this.resizeListener();
+			if (sticky.dataset.scrollheight) { 
+				this.scrollHeight = sticky.dataset.scrollheight;
+/*
+				if (this.scrollHeight==='touch') {
+					this.scrollHeight = $('.js-sticky').offset().top;
 				}
+*/
 			}
-			tatScroll.sticky();
-		}
-		*/
-	},
-/*	
-	listener: function() {
-		if (tatScroll.isOn==false) {
-			tatScroll.isOn = true;
-			tatScroll.viewport = $(window).height();
-			$(window).resize(function(){
-			   if($(this).height() != tatScroll.viewport){
-			      tatScroll.viewport = $(this).height();
-			   }
-			});
-			tatScroll.scrollTop = $('body').scrollTop();
+			this.sticky(sticky);
 		}
 	},
-    
-    sticky: function() {
-    	$(window).scroll( function() {
-		    tatScroll.scrollTop = $(this).scrollTop();	
-		    if ( tatScroll.scrollTop > tatScroll.scrollHeight ) { 
-		    	$('.js-sticky').addClass('scrolled');
-				$('body').addClass('sticky-fixed');	   	
-		    } else {
-		    	$('.js-sticky').removeClass('scrolled');
-		    	$('body').removeClass('sticky-fixed');    
+	
+    sticky: function(element) {
+	    window.addEventListener('scroll',function() {
+		    tatScroll.scrollTop = window.scrollY;	
+		    if (!tatScroll.stickyIsOn && tatScroll.scrollTop > tatScroll.scrollHeight ) { 
+		    	element.classList.add('scrolled');
+				document.body.classList.add('sticky-fixed');	   	
+				tatScroll.stickyIsOn = true;
+		    } else if (tatScroll.stickyIsOn && tatScroll.scrollTop <= tatScroll.scrollHeight) {
+		    	element.classList.remove('scrolled');
+		    	document.body.classList.remove('sticky-fixed');    
+		    	tatScroll.stickyIsOn = false;
 		    }
 		});
     },
     
-    inview: function() {
-	    
+    inViewListener: function() {
+	    var inviews = document.querySelectorAll('.js-inview');
+		Array.from(inviews).forEach(inview => {
+			this.resizeListener();
+// 		    inview.addEventListener('click',tat.confirm);
+		});
+	},
+	
+	inview: function() {
+		
+	}
+	/*
 		if ( $( '.js-inview' ).length ) {
 			$('.js-inview').each(function () { 	
 				var scrollElement = $(this).offset().top;
@@ -413,7 +446,7 @@ var tatScroll = {
 			$(window).off('scroll', tatScroll.scrollListener);
 		} 
     },
-*/
+	*/
 }
 tatScroll.initialize();
 
