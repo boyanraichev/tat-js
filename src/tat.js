@@ -5,12 +5,14 @@ var tat = {
 	
 	modalHooks: [],
 	
+	modalConfirmHooks: [],
+	
 	modalCloseHook: {},
 	
 	lang: {
 		ok: 'OK',
 		cancel: 'Cancel',
-	}
+	},
 	
 	initialize: function() {
 		this.listeners();
@@ -18,16 +20,16 @@ var tat = {
 	},
     
     listeners: function() {
-	    tat.modalListener();
-	    tat.modalOnListener();
-		tat.toggleListener();
-		tat.tabsListener();
-		tat.tooltipListener();
-		tat.scrollToListener();
-		tat.confirmListener();
-		tat.inputListener();
-		tat.addRowsListener();
-		tat.delRowsListener();
+	    this.modalListener();
+	    this.modalOnListener();
+		this.toggleListener();
+		this.tabsListener();
+		this.tooltipListener();
+		this.scrollToListener();
+		this.confirmListener();
+		this.inputListener();
+		this.addRowsListener();
+		this.delRowsListener();
     },
 	
 	modalListener: function() {
@@ -65,7 +67,11 @@ var tat = {
 		} else {
 			var modalContentDiv = document.querySelector('.modal-content'); 
 		}
- 		modalContentDiv.innerHTML = modalContent;
+		if (typeof modalContent === 'object') {
+			modalContentDiv.prepend(modalContent);	
+		} else {
+			modalContentDiv.innerHTML = modalContent;	
+		}
 		document.body.classList.add('modal-open');
 		var modalCloseDiv = document.createElement('div');
 		modalCloseDiv.classList.add('modal-close','js-modal-close');
@@ -73,7 +79,8 @@ var tat = {
 		modal.classList.add('fade-in');
 		
 		tat.modalCloseListeners();
-		modal.addEventListener('click',tat.modalClose,{'capture':false});
+		tat.modalConfirmListeners();
+		modal.addEventListener('click',tat.modalCloseEv,{'capture':false});
 		
 	    for (var i=0; i < tat.modalHooks.length; i++ ) {
 	    	if (tat.modalHooks[i].id == modalID) {
@@ -84,16 +91,38 @@ var tat = {
 	    }
 	},
 	
-	modalCloseListeners: function() {
-		var closes = document.querySelectorAll('.js-modal-close');
-		Array.from(closes).forEach(close => {
-		    close.addEventListener('click',tat.modalClose);
+	modalConfirmListeners: function() {
+		var confirms = document.querySelectorAll('.js-modal-confirm');
+		Array.from(confirms).forEach(confirm => {
+		    confirm.addEventListener('click',tat.modalConfirm,{'once':true});
 		});
 	},
 	
-	modalClose: function(event) {	
+	modalConfirm: function() {
+		var modal = document.querySelector('.modal');
+		for (var i=0; i < tat.modalConfirmHooks.length; i++ ) {
+	    	if (tat.modalConfirmHooks[i].id == modal.id) {
+	    		if (typeof tat.modalConfirmHooks[i].hook == 'function') {
+		    		tat.modalConfirmHooks[i].hook(i,this);
+		    	}
+	    	}
+	    }
+	},
+	
+	modalCloseListeners: function() {
+		var closes = document.querySelectorAll('.js-modal-close');
+		Array.from(closes).forEach(close => {
+		    close.addEventListener('click',tat.modalCloseEv);
+		});
+	},
+	
+	modalCloseEv: function() {
 		if (event.target !== this) { return; }
 		event.stopPropagation();
+		tat.modalClose();
+	},
+	
+	modalClose: function() {	
 		if (typeof tat.modalCloseHook == 'function') {
     		tat.modalCloseHook();
     	} else {
@@ -114,6 +143,40 @@ var tat = {
 		    	modalOn.click();
 		    }, delay);
 		}
+	},
+	
+	confirmListener: function() { 
+		var confirms = document.querySelectorAll('.js-confirm');
+		Array.from(confirms).forEach(confirm => {
+		    confirm.addEventListener('click',tat.confirm);
+		});
+	},
+	
+	confirm: function(event) {
+		event.preventDefault();
+		var modalID = ( this.dataset.modal ? this.dataset.modal : 'modal-confirm' );
+		modalContent = document.createElement('div');
+		modalContent.innerHTML = this.dataset.text;
+		modalButtons = document.createElement('div');
+		modalButtons.className = 'modal-confirm';
+		modalButtonN = document.createElement('button');
+		modalButtonN.classList.add('button','cancel','js-modal-close');
+		modalButtonN.innerHTML = tat.lang.cancel;
+		modalButtons.prepend(modalButtonN);
+		modalButtonY = document.createElement('button');
+		modalButtonY.classList.add('button','confirm','js-modal-confirm');
+		modalButtonY.dataset.confirmData = this.dataset.confirmData;
+		modalButtonY.innerHTML = tat.lang.ok;
+		modalButtons.prepend(modalButtonY);
+		modalContent.append(modalButtons);
+		var follow = this.dataset.follow;
+		if (follow) {
+			var href = this.href;
+			modalButtonY.addEventListener('click',function() { 
+				window.location = href;
+			});
+		}
+		tat.modal(modalID,modalContent,this);
 	},
 	
 	toggleListener: function() {
@@ -200,6 +263,10 @@ var tat = {
 		event.preventDefault();
 		var table = document.getElementById(this.dataset.table);
 		if (table) {
+			var max = table.dataset.maxRows; 
+			if (max && max <= table.childElementCount) {
+				return;
+			}
 			var prototype = this.dataset.prototype;
 			var lastRow = table.querySelector('.row:last-child');
 			if (lastRow.dataset.key === undefined) {
@@ -211,13 +278,8 @@ var tat = {
 			table.insertAdjacentHTML('beforeend', prototype);
 			tat.delRowsListener();
 			tat.toggleListener();
-			var callback = this.dataset.callback;
-			if (callback!==undefined) {
-				var x = eval(callback);
-				if (typeof x == 'function') {
-					x();
-				}
-			}
+			var event = new Event('rowAdded',{ key: key });
+			table.dispatchEvent(event);
 		}
 	},
 	
@@ -275,30 +337,6 @@ var tat = {
 			el = el.offsetParent;
 		}
 		return yPos;
-	},
-	
-	confirmListener: function() {
-		var confirms = document.querySelectorAll('.js-confirm');
-		Array.from(confirms).forEach(confirm => {
-		    confirm.addEventListener('click',tat.confirm);
-		});
-	},
-	
-	confirm: function(event) {
-		event.preventDefault();
-		var href = this.attr.href;
-		// build content
-		modalContent = this.dataset.text;
-		modalButtons = document.createElement('div');
-		modalButtons.className = 'modal-confirm';
-		
-		// add OK listener
-		var confirm = document.querySelect('js-confirm');
-		confirm.addEventListener('click',function() {
-			
-		});
-		// show dialog
-		tat.modal('confirm',modalContent,this);
 	},
 	
 	inputListener: function() {
