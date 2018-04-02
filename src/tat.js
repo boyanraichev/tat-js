@@ -269,7 +269,7 @@ var tat = {
 			}
 			var prototype = this.dataset.prototype;
 			var lastRow = table.querySelector('.row:last-child');
-			if (lastRow.dataset.key === undefined) {
+			if (!lastRow || lastRow.dataset.key === undefined) {
 				var key = 1;
 			} else {
 				var key = parseInt(lastRow.dataset.key) + 1;
@@ -311,7 +311,8 @@ var tat = {
 		var target = document.getElementById(this.dataset.scrollto);
 		if (target) {
 			target.scrollIntoView({ 
-				behavior: 'smooth' 
+				behavior: 'smooth',
+				block: 'start'
 			});
 /*
 			var scroll = tat.scrollPosition(target) - offset;
