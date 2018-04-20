@@ -58,7 +58,6 @@ var tat = {
 		let modal = document.querySelector('.modal');
 		if (!modal) {
 			modal = document.createElement('div');
-			modal.id = modalID;
 			modal.className = 'modal';
 			var modalContentDiv = document.createElement('div');
 			modalContentDiv.className = 'modal-content';
@@ -67,6 +66,7 @@ var tat = {
 		} else {
 			var modalContentDiv = document.querySelector('.modal-content'); 
 		}
+		modal.id = modalID;
 		if (typeof modalContent === 'object') {
 			modalContentDiv.prepend(modalContent);	
 		} else {
@@ -116,7 +116,7 @@ var tat = {
 		});
 	},
 	
-	modalCloseEv: function() {
+	modalCloseEv: function(event) {
 		if (event.target !== this) { return; }
 		event.stopPropagation();
 		tat.modalClose();
