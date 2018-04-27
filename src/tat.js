@@ -119,6 +119,7 @@ var tat = {
 	modalCloseEv: function(event) {
 		if (event.target !== this) { return; }
 		event.stopPropagation();
+		event.preventDefault();
 		tat.modalClose();
 	},
 	
