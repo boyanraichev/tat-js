@@ -279,7 +279,7 @@ var tat = {
 			table.insertAdjacentHTML('beforeend', prototype);
 			tat.delRowsListener();
 			tat.toggleListener();
-			var event = new Event('rowAdded',{ key: key });
+			var event = new CustomEvent('rowAdded',{ detail: key });
 			table.dispatchEvent(event);
 		}
 	},
@@ -314,16 +314,7 @@ var tat = {
 			target.scrollIntoView({ 
 				behavior: 'smooth',
 				block: 'start'
-			});
-/*
-			var scroll = tat.scrollPosition(target) - offset;
-// 			window.scroll(0,scroll);
-			window.scroll({
-				top: scroll, 
-				left: 0, 
-				behavior: 'smooth' 
-			});
-*/			
+			});		
 		}
 	},
 	
