@@ -120,12 +120,12 @@ var tat = {
 		if (event.target !== this) { return; }
 		event.stopPropagation();
 		event.preventDefault();
-		tat.modalClose();
+		tat.modalClose(this);
 	},
 	
-	modalClose: function() {	
+	modalClose: function(el) {	
 		if (typeof tat.modalCloseHook == 'function') {
-    		tat.modalCloseHook();
+    		tat.modalCloseHook(el);
     	} else {
 			let modal = document.querySelector('.modal');
 			modal.classList.remove('fade-in');
