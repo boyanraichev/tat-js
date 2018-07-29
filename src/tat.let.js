@@ -68,6 +68,7 @@ var tat = {
 		}
 		modal.id = modalID;
 		if (typeof modalContent === 'object') {
+			modalContentDiv.innerHTML = '';
 			modalContentDiv.prepend(modalContent);	
 		} else {
 			modalContentDiv.innerHTML = modalContent;	
@@ -79,6 +80,7 @@ var tat = {
 		modal.classList.add('fade-in');
 
 		tat.modalCloseListeners();
+		tat.confirmListener();
 		tat.modalConfirmListeners();
 		modal.addEventListener('click',tat.modalCloseEv,{'capture':false});
 		
