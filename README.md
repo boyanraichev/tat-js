@@ -15,7 +15,7 @@ This package aims to:
 Get Started
 -----------
 
-There are two files you need to include: 
+Include the following files: 
 
 1. Polyfill - including this great package will add support for the JavaScript features that the user browser is missing. Most people use a modern browser and will only have a few KB script included, which is a huge difference compared to jQuery. 
 ```html
@@ -23,9 +23,13 @@ There are two files you need to include:
 ```
 
 2. TAT.js itself:
-  a) tat.min.js - this is the better browser compatibility version, minified.
-  b) tat.let.js - this is the version that uses javascript "let" variables, which still have only about 92% support.
+  a) tat.min.js - this is the EC6 version, minified.
+  b) tat.transpiled.min.js - this is the EC5 version for better browser support.
 
+3. TATscroll is an optional script that adds two features related to scrolling.
+  a) tatScroll.min.js - this is the EC6 version, minified.
+  b) tatScroll.transpiled.min.js - this is the EC5 version for better browser support.
+  
 **Hooks**
 
 This library uses classes as handlers, as they are much faster than using data attributes. All classes that call the library are "js-" prefixed.
@@ -56,6 +60,14 @@ data-modal-get="" - the ID of an element on your page that contains your modal c
 Hooks:
 - You can push objects to the tat.modalHooks array, containing hooks tied to a particular modal ID. The hook object should contain two properties: "id" is the modal ID you want it to run on, and "hook" is your hook function.
 - You can set the tat.modalCloseHook property as a function to run when the user tries to close the modal. This hook is run once and then cleared (so you have to set it up every time this particular modal is shown).
+
+**Confirm**
+
+You can show a confirmation modal box in two ways:
+
+1. Use a ".js-confirm" class on your handler element. Use the data-modal attribute to set the modal ID and the data-text attribute to set the modal text. Pass additional data through the data-confirm-data="" attribute on the same element. Set up your callback function using a modal hook as described in the modals section.
+
+2. Hook your handler in your script and call tat.confirm(modalID,modalContent,callback,data) method with the following parameters: the ID of the confirmation modal, the text of the confirmation modal, the callback function upon confirmation and additional data you want to pass to the callback function.
 
 **Toggle on/off**
 
@@ -121,5 +133,7 @@ data-cookie-btn="" - the HTML content of the accept button.
 Additional scroll-related functions are contained in the tatScroll object.
 
 ***Sticky Header***
+
+Use ".js-sticky" class on the header or other element you want to make sticky. Use CSS to actually make the element sticky - the script only adds the respective class.
 
 ***Element in viewport***

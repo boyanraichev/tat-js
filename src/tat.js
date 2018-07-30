@@ -1,11 +1,10 @@
 // TAT.JS v2.0 Beta
 var tat = {
 	
-// 	modalDiv: null,
-	
 	modalHooks: [],
 	
-	modalConfirmHooks: [],
+	modalConfirmHook: null,
+	modalConfirmData: null,
 	
 	modalCloseHook: {},
 	
@@ -13,15 +12,15 @@ var tat = {
 		ok: 'OK',
 		cancel: 'Cancel',
 	},
-	
+		
 	initialize: function() {
 		this.listeners();
+	    this.modalOnListener();
 		this.cookie();
 	},
     
     listeners: function() {
 	    this.modalListener();
-	    this.modalOnListener();
 		this.toggleListener();
 		this.tabsListener();
 		this.tooltipListener();
@@ -41,11 +40,11 @@ var tat = {
     
     modalShow: function(event) {
 		event.preventDefault();
-		var modalClicked = this;
-		var modalID = modalClicked.dataset.modal;
-		var modalContent = modalClicked.dataset.modalContent;
+		let modalClicked = this;
+		let modalID = modalClicked.dataset.modal;
+		let modalContent = modalClicked.dataset.modalContent;
 		if (modalContent==undefined || modalContent.length < 1) { 
-			var modalGet = document.getElementById(this.dataset.modalGet);
+			let modalGet = document.getElementById(this.dataset.modalGet);
 			if (modalGet) { 
 				modalContent = modalGet.innerHTML;
 			}
@@ -55,7 +54,7 @@ var tat = {
 
 	
 	modal: function(modalID,modalContent,elementClicked) {
-		var modal = document.querySelector('.modal');
+		let modal = document.querySelector('.modal');
 		if (!modal) {
 			modal = document.createElement('div');
 			modal.className = 'modal';
@@ -74,45 +73,42 @@ var tat = {
 			modalContentDiv.innerHTML = modalContent;	
 		}
 		document.body.classList.add('modal-open');
-		var modalCloseDiv = document.createElement('div');
+		let modalCloseDiv = document.createElement('div');
 		modalCloseDiv.classList.add('modal-close','js-modal-close');
 		modalContentDiv.prepend(modalCloseDiv);
 		modal.classList.add('fade-in');
-		
-		tat.modalCloseListeners();
-		tat.confirmListener();
-		tat.modalConfirmListeners();
+
 		modal.addEventListener('click',tat.modalCloseEv,{'capture':false});
+		tat.modalCloseListeners();
+		tat.modalConfirmListeners();
+		tat.confirmListener();
 		
-	    for (var i=0; i < tat.modalHooks.length; i++ ) {
-	    	if (tat.modalHooks[i].id == modalID) {
-	    		if (typeof tat.modalHooks[i].hook == 'function') {
-		    		tat.modalHooks[i].hook(i,elementClicked);
+		tat.modalHooks.forEach(modalHook => {		    
+	    	if (modalHook.id == modalID) {
+	    		if (typeof modalHook.hook == 'function') {
+		    		modalHook.hook(i,elementClicked);
 		    	}
 	    	}
-	    }
+	    });
 	},
 	
 	modalConfirmListeners: function() {
-		var confirms = document.querySelectorAll('.js-modal-confirm');
+		let confirms = document.querySelectorAll('.js-modal-confirm');
 		Array.from(confirms).forEach(confirm => {
 		    confirm.addEventListener('click',tat.modalConfirm,{'once':true});
 		});
 	},
 	
 	modalConfirm: function() {
-		var modal = document.querySelector('.modal');
-		for (var i=0; i < tat.modalConfirmHooks.length; i++ ) {
-	    	if (tat.modalConfirmHooks[i].id == modal.id) {
-	    		if (typeof tat.modalConfirmHooks[i].hook == 'function') {
-		    		tat.modalConfirmHooks[i].hook(i,this);
-		    	}
-	    	}
-	    }
+		if (typeof tat.modalConfirmHook == 'function') {
+    		tat.modalConfirmHook(tat.modalConfirmData);
+    	} else {
+	    	tat.modalClose();
+    	}
 	},
 	
 	modalCloseListeners: function() {
-		var closes = document.querySelectorAll('.js-modal-close');
+		let closes = document.querySelectorAll('.js-modal-close');
 		Array.from(closes).forEach(close => {
 		    close.addEventListener('click',tat.modalCloseEv);
 		});
@@ -129,19 +125,21 @@ var tat = {
 		if (typeof tat.modalCloseHook == 'function') {
     		tat.modalCloseHook(el);
     	} else {
-			var modal = document.querySelector('.modal');
+			let modal = document.querySelector('.modal');
 			modal.classList.remove('fade-in');
 			modal.classList.add('fade-out');
 			setTimeout(function(){ modal.remove(); }, 500);
 		    document.body.classList.remove('modal-open');
+    		tat.modalConfirmHook = null;
+			tat.modalConfirmData = null;
 		}
 		tat.modalCloseHook = {};
 	},
 
 	modalOnListener: function() {
-		var modalOn = document.querySelector('.js-modal-on');
+		let modalOn = document.querySelector('.js-modal-on');
 		if (modalOn) {
-			var delay = parseInt(modalOn.dataset.delay) || 0;
+			let delay = parseInt(modalOn.dataset.delay) || 0;
 			setTimeout(function() {
 		    	modalOn.click();
 		    }, delay);
@@ -149,17 +147,23 @@ var tat = {
 	},
 	
 	confirmListener: function() { 
-		var confirms = document.querySelectorAll('.js-confirm');
+		let confirms = document.querySelectorAll('.js-confirm');
 		Array.from(confirms).forEach(confirm => {
-		    confirm.addEventListener('click',tat.confirm);
+		    confirm.addEventListener('click',function(e){
+			    e.preventDefault();
+			    let modalID = ( this.dataset.modal ? this.dataset.modal : 'modal-confirm' );
+			    let text = this.dataset.text;
+			    tat.modalConfirmData = this.dataset.confirmData;
+			    let follow = this.dataset.follow;
+			    tat.confirmPrep(modalID,text,this,follow);
+		    });
 		});
 	},
 	
-	confirm: function(event) {
-		event.preventDefault();
-		var modalID = ( this.dataset.modal ? this.dataset.modal : 'modal-confirm' );
+	confirmPrep: function(modalID,text,click,follow) {
+		
 		modalContent = document.createElement('div');
-		modalContent.innerHTML = this.dataset.text;
+		modalContent.innerHTML = text;
 		modalButtons = document.createElement('div');
 		modalButtons.className = 'modal-confirm';
 		modalButtonN = document.createElement('button');
@@ -168,22 +172,27 @@ var tat = {
 		modalButtons.prepend(modalButtonN);
 		modalButtonY = document.createElement('button');
 		modalButtonY.classList.add('button','confirm','js-modal-confirm');
-		modalButtonY.dataset.confirmData = this.dataset.confirmData;
+// 		modalButtonY.dataset.confirmData = data;
 		modalButtonY.innerHTML = tat.lang.ok;
 		modalButtons.prepend(modalButtonY);
 		modalContent.append(modalButtons);
-		var follow = this.dataset.follow;
 		if (follow) {
 			var href = this.href;
 			modalButtonY.addEventListener('click',function() { 
 				window.location = href;
 			});
 		}
-		tat.modal(modalID,modalContent,this);
+		tat.modal(modalID,modalContent,click);
+	},
+	
+	confirm: function(modalID,modalContent,hook,data) {
+		tat.modalConfirmHook = hook;
+		tat.modalConfirmData = data;
+		tat.confirmPrep(modalID,modalContent,null,false);
 	},
 	
 	toggleListener: function() {
-		var toggles = document.querySelectorAll('.js-toggle');
+		let toggles = document.querySelectorAll('.js-toggle');
 		Array.from(toggles).forEach(toggle => {
 		    toggle.addEventListener('click',tat.toggle);
 		});
@@ -191,11 +200,11 @@ var tat = {
 
 	toggle: function(event) {
 		event.preventDefault();
-		var toggle = document.getElementById(this.dataset.toggle);
+		let toggle = document.getElementById(this.dataset.toggle);
 		if (toggle) {
 			this.classList.toggle('toggled');
 			toggle.classList.toggle('opened');
-			var bodyClass = this.dataset.bodyClass;
+			let bodyClass = this.dataset.bodyClass;
 			if (bodyClass!=undefined) {
 				document.body.classList.toggle(bodyClass);
 			}
@@ -203,7 +212,7 @@ var tat = {
 	},
 
 	tabsListener: function() {
-		var tabs = document.querySelectorAll('.js-tab');
+		let tabs = document.querySelectorAll('.js-tab');
 		Array.from(tabs).forEach(tab => {
 		    tab.addEventListener('click',tat.tabs);
 		});
@@ -211,26 +220,26 @@ var tat = {
 	
 	tabs: function(event) {
 		event.preventDefault();
-		var menuTabs = document.querySelectorAll('#'+this.dataset.menu+' .js-tab.active');
+		let menuTabs = document.querySelectorAll('#'+this.dataset.menu+' .js-tab.active');
 		Array.from(menuTabs).forEach(menuTab => {
 		    menuTab.classList.remove('active');
 		});
 		this.classList.add('active');
-		var wrapTabs = document.querySelectorAll('#'+this.dataset.wrap+' .tab.active');
+		let wrapTabs = document.querySelectorAll('#'+this.dataset.wrap+' .tab.active');
 		Array.from(wrapTabs).forEach(wrapTab => {
 		    wrapTab.classList.remove('active');
 		});
-		var tab = document.getElementById(this.dataset.tab);
+		let tab = document.getElementById(this.dataset.tab);
 		tab.classList.add('active');
 	},
 
 	tooltipListener: function() {
-		var tooltips = document.querySelectorAll('.js-tooltip');
+		let tooltips = document.querySelectorAll('.js-tooltip');
 		Array.from(tooltips).forEach(tooltip => {
 		    tooltip.addEventListener('mouseenter',tat.tooltipOn);
 		    tooltip.addEventListener('mouseleave',tat.tooltipOff);
 		});
-		var tooltipsFocus = document.querySelectorAll('.js-tooltip-focus');
+		let tooltipsFocus = document.querySelectorAll('.js-tooltip-focus');
 		Array.from(tooltipsFocus).forEach(tooltipFocus => {
 		    tooltipFocus.addEventListener('focus',tat.tooltipOn);
 		    tooltipFocus.addEventListener('blur',tat.tooltipOff);
@@ -240,7 +249,7 @@ var tat = {
 	tooltipOn: function(event) {
 		event.preventDefault();
 		this.classList.add('tooltipped');
-		var tooltip = document.getElementById(this.dataset.tooltip);
+		let tooltip = document.getElementById(this.dataset.tooltip);
 		if (tooltip) {
 			tooltip.classList.add('opened');
 		}
@@ -249,14 +258,14 @@ var tat = {
 	tooltipOff: function(event) {
 		event.preventDefault();
 		this.classList.remove('tooltipped');
-		var tooltip = document.getElementById(this.dataset.tooltip);
+		let tooltip = document.getElementById(this.dataset.tooltip);
 		if (tooltip) {
 			tooltip.classList.remove('opened');
 		}
 	},
 	
 	addRowsListener: function() {
-		var addRows = document.querySelectorAll('.js-add-row');
+		let addRows = document.querySelectorAll('.js-add-row');
 		Array.from(addRows).forEach(addRow => {
 		    addRow.addEventListener('click',tat.addRow);
 		});
@@ -264,14 +273,14 @@ var tat = {
 		
 	addRow: function(event) {
 		event.preventDefault();
-		var table = document.getElementById(this.dataset.table);
+		let table = document.getElementById(this.dataset.table);
 		if (table) {
-			var max = table.dataset.maxRows; 
+			let max = table.dataset.maxRows;
 			if (max && max <= table.childElementCount) {
 				return;
 			}
-			var prototype = this.dataset.prototype;
-			var lastRow = table.querySelector('.row:last-child');
+			let prototype = this.dataset.prototype;
+			let lastRow = table.querySelector('.row:last-child');
 			if (!lastRow || lastRow.dataset.key === undefined) {
 				var key = 1;
 			} else {
@@ -281,13 +290,13 @@ var tat = {
 			table.insertAdjacentHTML('beforeend', prototype);
 			tat.delRowsListener();
 			tat.toggleListener();
-			var event = new CustomEvent('rowAdded',{ detail: key });
+			let event = new CustomEvent('rowAdded',{ detail: key });
 			table.dispatchEvent(event);
 		}
 	},
 	
 	delRowsListener: function() {
-		var delRows = document.querySelectorAll('.js-del-row');
+		let delRows = document.querySelectorAll('.js-del-row');
 		Array.from(delRows).forEach(delRow => {
 		    delRow.addEventListener('click',tat.delRow);
 		});
@@ -295,13 +304,13 @@ var tat = {
 	
 	delRow: function(event) {
 		event.preventDefault();
-		var row = this.closest('.row');
+		let row = this.closest('.row');
 		row.classList.add('fade-out');
 		setTimeout(function(){ row.remove(); }, 500);
 	},
 
 	scrollToListener: function() {
-		var scrolls = document.querySelectorAll('.js-scroll');
+		let scrolls = document.querySelectorAll('.js-scroll');
 		Array.from(scrolls).forEach(scroll => {
 		    scroll.addEventListener('click',tat.scrollTo);
 		});
@@ -309,9 +318,9 @@ var tat = {
 	
 	scrollTo: function(event) {
 		event.preventDefault();
-		var offset = this.dataset.offset;
+		let offset = this.dataset.offset;
 			if (offset==undefined) { offset=60; }
-		var target = document.getElementById(this.dataset.scrollto);
+		let target = document.getElementById(this.dataset.scrollto);
 		if (target) {
 			target.scrollIntoView({ 
 				behavior: 'smooth',
@@ -320,22 +329,8 @@ var tat = {
 		}
 	},
 	
-	scrollPosition: function(el) {
-		var yPos = 0;
-		while (el) {
-			if (el.tagName == "BODY") {
-				var yScroll = el.scrollTop || document.documentElement.scrollTop;
-				yPos += (el.offsetTop - yScroll + el.clientTop);
-			} else {
-				yPos += (el.offsetTop - el.scrollTop + el.clientTop);
-			}			
-			el = el.offsetParent;
-		}
-		return yPos;
-	},
-	
 	inputListener: function() {
-		var inputs = document.querySelectorAll('input, select, textarea');
+		let inputs = document.querySelectorAll('input, select, textarea');
 		Array.from(inputs).forEach(input => {
 		    input.addEventListener('focus',function(){
 			    this.classList.add('has-input');
@@ -351,135 +346,37 @@ var tat = {
 			if (match) cookie = match[1];
 			
 			if ( cookie.length < 1 ) {
-				
-				var cookie_btn = document.body.dataset.cookieBtn;
-		  		var cookie_msg = document.body.dataset.cookieMsg;
 		  		
-		  		var cookieDiv = document.createElement('div');
+		  		let cookieDiv = document.createElement('div');
 		  		cookieDiv.id = 'cookielaw';
-		  		var cookieMsgDiv = document.createElement('div');
+		  		let cookieMsgDiv = document.createElement('div');
 		  		cookieMsgDiv.id = 'cookielaw-msg';
-		  		cookieMsgDiv.innerHTML = cookie_msg;
-		  		var cookieBtnDiv = document.createElement('div');
+		  		cookieMsgDiv.innerHTML = document.body.dataset.cookieMsg;
+		  		let cookieBtnDiv = document.createElement('div');
 		  		cookieBtnDiv.id = 'cookielaw-btn';
-		  		var cookieBtnBtn = document.createElement('button');
-		  		cookieBtnBtn.id = 'cookiewlaw-accept';
-		  		cookieBtnBtn.innerHTML = cookie_btn;
+		  		let cookieAccept = document.createElement('button');
+		  		cookieAccept.id = 'cookiewlaw-accept';
+		  		cookieAccept.innerHTML = document.body.dataset.cookieBtn;
 		  		
-		  		cookieBtnDiv.prepend(cookieBtnBtn);
+		  		cookieBtnDiv.prepend(cookieAccept);
 		  		cookieDiv.prepend(cookieBtnDiv);
 		  		cookieDiv.prepend(cookieMsgDiv);
 		  		document.body.prepend(cookieDiv);
 		  		
-		  		setTimeout(function(){ cookieDiv.classList.add('fade-in'); }, 2000);
-		  		setTimeout(function(){ cookieDiv.classList.add('fade-out'); }, 12000);
-		  		setTimeout(function(){ cookieDiv.remove(); }, 13000);
+		  		setTimeout(function(){ cookieDiv.classList.add('fade-in'); }, 1000);
 		  		
-		  		cookieBtnBtn.addEventListener('click', function() {
+		  		cookieAccept.addEventListener('click', function() {
 			  		cookieDiv.classList.add('fade-out');
 			  		setTimeout(function(){ cookieDiv.remove(); }, 500);
-		  		})
-		  		
-		  		var d = new Date();
-			    d.setTime(d.getTime() + (30*24*60*60*1000));
-			    var expires = "expires="+d.toUTCString();
-			    document.cookie = 'cookielaw=Seen; ' + expires;
+			  		
+			  		var d = new Date();
+				    d.setTime(d.getTime() + (90*24*60*60*1000));
+				    var expires = "expires="+d.toUTCString();
+				    document.cookie = 'cookielaw=Seen; ' + expires;
+		  		});
+			    
 			}
 		} 
 	},
 }
 tat.initialize();
-
-// scroll listener v.1.3
-var tatScroll = {
-
-	scrollHeight: 0,
-	viewport: null,
-	scrollTop: null, 
-	resizeIsOn: false,
-	stickyIsOn: false,
-			
-	initialize: function() {
-		this.stickyListener();
-		this.inViewListener();
-	},
-
-	resizeListener: function() {
-		if (tatScroll.resizeIsOn==false) {
-			tatScroll.resizeIsOn = true;
-			tatScroll.viewport = window.innerHeight;
-			window.addEventListener('resize', function() {
-		        if (window.innerHeight!=tatScroll.viewport) {
-			        tatScroll.viewport = window.innerHeight;
-		        }
-		    }, true);
-		    tatScroll.scrollTop = window.scrollY;
-		}
-	},
-	
-	stickyListener: function() {
-		var sticky = document.querySelector('.js-sticky');
-		if (sticky) {
-			this.resizeListener();
-			if (sticky.dataset.scrollheight) { 
-				this.scrollHeight = sticky.dataset.scrollheight;
-/*
-				if (this.scrollHeight==='touch') {
-					this.scrollHeight = $('.js-sticky').offset().top;
-				}
-*/
-			}
-			this.sticky(sticky);
-		}
-	},
-	
-    sticky: function(element) {
-	    window.addEventListener('scroll',function() {
-		    tatScroll.scrollTop = window.scrollY;	
-		    if (!tatScroll.stickyIsOn && tatScroll.scrollTop > tatScroll.scrollHeight ) { 
-		    	element.classList.add('scrolled');
-				document.body.classList.add('sticky-fixed');	   	
-				tatScroll.stickyIsOn = true;
-		    } else if (tatScroll.stickyIsOn && tatScroll.scrollTop <= tatScroll.scrollHeight) {
-		    	element.classList.remove('scrolled');
-		    	document.body.classList.remove('sticky-fixed');    
-		    	tatScroll.stickyIsOn = false;
-		    }
-		});
-    },
-    
-    inViewListener: function() {
-	    var inviews = document.querySelectorAll('.js-inview');
-		Array.from(inviews).forEach(inview => {
-			this.resizeListener();
-// 		    inview.addEventListener('click',tat.confirm);
-		});
-	},
-	
-	inview: function() {
-		
-	}
-	/*
-		if ( $( '.js-inview' ).length ) {
-			$('.js-inview').each(function () { 	
-				var scrollElement = $(this).offset().top;
-				var scrollMin = scrollElement - tatScroll.viewport;
-				var scrollMax = scrollElement + $(this).outerHeight();
-				var scrollCallback = $(this).data('callback');
-				if (tatScroll.scrollTop > scrollMin && tatScroll.scrollTop < scrollMax) { 
-					$(this).removeClass('js-inview').addClass('in-viewport');
-					if (scrollCallback!==undefined && typeof scrollCallback == 'function') { 
-						var scrolledID = $(this).attr('id');
-						var scrolledElement = $(this);	
-						scrollCallback(scrolledID,scrolledElement); 
-					}
-				}
-			});
-		} else {
-			$(window).off('scroll', tatScroll.scrollListener);
-		} 
-    },
-	*/
-}
-tatScroll.initialize();
-
