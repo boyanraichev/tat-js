@@ -32,7 +32,7 @@ var tat = {
     },
 	
 	modalListener: function() {
-		modals = document.querySelectorAll('.js-modal');
+		let modals = document.querySelectorAll('.js-modal');
 		Array.from(modals).forEach(modal => {
 		    modal.addEventListener('click',tat.modalShow);
 		});
@@ -83,7 +83,7 @@ var tat = {
 		tat.modalConfirmListeners();
 		tat.confirmListener();
 		
-		tat.modalHooks.forEach(modalHook => {		    
+		tat.modalHooks.forEach(function(modalHook,i) {		    
 	    	if (modalHook.id == modalID) {
 	    		if (typeof modalHook.hook == 'function') {
 		    		modalHook.hook(i,elementClicked);
@@ -162,17 +162,16 @@ var tat = {
 	
 	confirmPrep: function(modalID,text,click,follow) {
 		
-		modalContent = document.createElement('div');
+		let modalContent = document.createElement('div');
 		modalContent.innerHTML = text;
-		modalButtons = document.createElement('div');
+		let modalButtons = document.createElement('div');
 		modalButtons.className = 'modal-confirm';
-		modalButtonN = document.createElement('button');
+		let modalButtonN = document.createElement('button');
 		modalButtonN.classList.add('button','cancel','js-modal-close');
 		modalButtonN.innerHTML = tat.lang.cancel;
 		modalButtons.prepend(modalButtonN);
-		modalButtonY = document.createElement('button');
+		let modalButtonY = document.createElement('button');
 		modalButtonY.classList.add('button','confirm','js-modal-confirm');
-// 		modalButtonY.dataset.confirmData = data;
 		modalButtonY.innerHTML = tat.lang.ok;
 		modalButtons.prepend(modalButtonY);
 		modalContent.append(modalButtons);
