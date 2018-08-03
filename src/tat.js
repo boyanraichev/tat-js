@@ -82,6 +82,7 @@ var tat = {
 		tat.modalCloseListeners();
 		tat.modalConfirmListeners();
 		tat.confirmListener();
+		tat.inputListener();
 		
 		tat.modalHooks.forEach(function(modalHook,i) {		    
 	    	if (modalHook.id == modalID) {
