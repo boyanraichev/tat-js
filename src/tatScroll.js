@@ -30,7 +30,7 @@ var tatScroll = {
 	},
 	
 	stickyListener: function() {
-		var sticky = document.querySelector('.js-sticky');
+		let sticky = document.querySelector('.js-sticky');
 		if (sticky) {
 			tatScroll.resizeListener();
 			if (sticky.dataset.scrollheight) { 
@@ -51,19 +51,20 @@ var tatScroll = {
 		}
 	},
 	
-	inview(el,index) {
+	inview: function(el,index) {
 		
 		tatScroll.stopScroll = false;
 		let scrollElement = tatScroll.scrollPosition(el);
 		let scrollMin = scrollElement - tatScroll.viewport;
 		let scrollMax = scrollElement + el.offsetHeight;
 		if (tatScroll.scrollTop > scrollMin && tatScroll.scrollTop < scrollMax) { 
-			console.log('inview el',el,index,tatScroll.viewport,tatScroll.scrollTop,scrollElement,scrollMin,scrollMax);
 			el.classList.add('in-viewport');
-			el.classList.remove('js-inview');
 			let event = new CustomEvent('inView');
 			el.dispatchEvent(event);
-			tatScroll.inviews.splice(index, 1);
+			if (el.dataset.once !== undefined) {
+				el.classList.remove('js-inview');
+				tatScroll.inviews.splice(index, 1);
+			}
 		}
 	},
 	
@@ -94,7 +95,6 @@ var tatScroll = {
 		}
 		
 		if (tatScroll.stopScroll) {
-			console.log('stop');
 			window.removeEventListener('scroll', tatScroll.scroll);
 		}
 	},

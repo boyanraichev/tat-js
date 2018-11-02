@@ -165,6 +165,7 @@ var tat = {
 		
 		let modalContent = document.createElement('div');
 		modalContent.innerHTML = text;
+		modalContent.classList = 'modal-confirm-content';
 		let modalButtons = document.createElement('div');
 		modalButtons.className = 'modal-confirm';
 		let modalButtonN = document.createElement('button');
