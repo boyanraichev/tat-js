@@ -1,0 +1,15 @@
+{
+  "name": "tat-js",
+  "version": "1.0.0",
+  "description": "Minimalistic JS web package",
+  "browser": "src/tat.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/boyanraichev/tat-js.git"
+  },
+  "author": "Boyan Raichev",
+  "license": "MIT"
+}

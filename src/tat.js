@@ -1,4 +1,3 @@
-// TAT.JS v2.0 Beta
 var tat = {
 	
 	modalHooks: [],
@@ -380,4 +379,7 @@ var tat = {
 		} 
 	},
 }
+
 tat.initialize();
+
+export { tat }

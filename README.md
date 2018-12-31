@@ -1,5 +1,6 @@
 # tat-js
-Minimalistic JS web package
+
+Minimalistic JS web package.
 
 Objectives
 ----------
@@ -15,18 +16,19 @@ This package aims to:
 Get Started
 -----------
 
-Include the following files: 
+If you are using npm or another package manager you can install by including `tat-js` in your dependencies and then using `require('tat')` in your script.
 
-1. Polyfill - including this great package will add support for the JavaScript features that the user browser is missing. Most people use a modern browser and will only have a few KB script included, which is a huge difference compared to jQuery. 
+Alternatively, if you downloaded the source from GitHub, you can include the file directly, using one of the two versions:
+  a) tat.min.js - this is the EC6 version, minified.
+  b) tat.transpiled.min.js - this is the EC5 transpiled version for better browser support.
+
+If you are not transpiling/compiling your scripts, you would have to include Polyfill.
+
 ```html
 <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
 ```
 
-2. TAT.js itself:
-  a) tat.min.js - this is the EC6 version, minified.
-  b) tat.transpiled.min.js - this is the EC5 version for better browser support.
-
-3. TATscroll is an optional script that adds two features related to scrolling.
+TATscroll is an optional script that adds two features related to scrolling.
   a) tatScroll.min.js - this is the EC6 version, minified.
   b) tatScroll.transpiled.min.js - this is the EC5 version for better browser support.
   
@@ -134,6 +136,6 @@ Additional scroll-related functions are contained in the tatScroll object.
 
 ***Sticky Header***
 
-Use ".js-sticky" class on the header or other element you want to make sticky. Use CSS to actually make the element sticky - the script only adds the respective class.
+Use ".js-sticky" class on the header or other element you want to make sticky. Use CSS to actually make the element sticky - the script only adds the respective class when the page is scrolled to the set offset.
 
 ***Element in viewport***
