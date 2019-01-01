@@ -382,4 +382,4 @@ var tat = {
 
 tat.initialize();
 
-export { tat }
+export { tat as tat }
