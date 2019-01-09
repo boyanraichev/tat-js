@@ -132,10 +132,12 @@ data-cookie-btn="" - the HTML content of the accept button.
 
 **Scroll Functions**
 
-Additional scroll-related functions are contained in the tatScroll object.
+Additional scroll-related functions.
 
 ***Sticky Header***
 
 Use ".js-sticky" class on the header or other element you want to make sticky. Use CSS to actually make the element sticky - the script only adds the respective class when the page is scrolled to the set offset.
 
 ***Element in viewport***
+
+Use *js-inview* class on an element and when the element is scrolled into the viewport it will gain the *in-viewport* class.
