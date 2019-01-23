@@ -351,86 +351,86 @@ var tat = {
 	inviews: [],
 
 	resizeListener: function() {
-		tatScroll.viewport = window.innerHeight;
-		tatScroll.scrollTop = window.scrollY;
-		window.addEventListener('resize', tatScroll.resize, true);
+		tat.viewport = window.innerHeight;
+		tat.scrollTop = window.scrollY;
+		window.addEventListener('resize', tat.resize, true);
 	},
 	
 	resize: function() {
-        if (window.innerHeight!=tatScroll.viewport) {
-	        tatScroll.viewport = window.innerHeight;
-	        tatScroll.scrollTop = window.scrollY;
-	        tatScroll.inViewListener();
+        if (window.innerHeight!=tat.viewport) {
+	        tat.viewport = window.innerHeight;
+	        tat.scrollTop = window.scrollY;
+	        tat.inViewListener();
         }
 	},
 	
 	stickyListener: function() {
 		let sticky = document.querySelector('.js-sticky');
 		if (sticky) {
-			tatScroll.resizeListener();
+			tat.resizeListener();
 			if (sticky.dataset.scrollheight) { 
 				this.scrollHeight = sticky.dataset.scrollheight;
 			}
-			tatScroll.sticky = sticky;
-			window.addEventListener('scroll',tatScroll.scroll);
+			tat.sticky = sticky;
+			window.addEventListener('scroll',tat.scroll);
 		}
 	},
     
     inViewListener: function() {
-	    tatScroll.inviews = [];
+	    tat.inviews = [];
 	    let inviews = document.querySelectorAll('.js-inview');
 	    if (inviews) {
-		    tatScroll.inviews = Array.from(inviews);
-			tatScroll.resizeListener();
-			tatScroll.scrollListener();
+		    tat.inviews = Array.from(inviews);
+			tat.resizeListener();
+			tat.scrollListener();
 		}
 	},
 	
 	inview: function(el,index) {
 		
-		tatScroll.stopScroll = false;
-		let scrollElement = tatScroll.scrollPosition(el);
-		let scrollMin = scrollElement - tatScroll.viewport;
+		tat.stopScroll = false;
+		let scrollElement = tat.scrollPosition(el);
+		let scrollMin = scrollElement - tat.viewport;
 		let scrollMax = scrollElement + el.offsetHeight;
-		if (tatScroll.scrollTop > scrollMin && tatScroll.scrollTop < scrollMax) { 
+		if (tat.scrollTop > scrollMin && tat.scrollTop < scrollMax) { 
 			el.classList.add('in-viewport');
 			let event = new CustomEvent('inView');
 			el.dispatchEvent(event);
 			if (el.dataset.once !== undefined) {
 				el.classList.remove('js-inview');
-				tatScroll.inviews.splice(index, 1);
+				tat.inviews.splice(index, 1);
 			}
 		}
 	},
 	
 	scrollListener: function() {
-		if (tatScroll.inviews.length > 0) {
-			window.addEventListener('scroll', tatScroll.scroll);
+		if (tat.inviews.length > 0) {
+			window.addEventListener('scroll', tat.scroll);
 		}
 	},
 	
 	scroll: function() {
-		tatScroll.stopScroll = true;
+		tat.stopScroll = true;
 		
-		tatScroll.scrollTop = window.scrollY;	
+		tat.scrollTop = window.scrollY;	
 		
-		tatScroll.inviews.forEach(tatScroll.inview);
+		tat.inviews.forEach(tat.inview);
 
-		if (tatScroll.sticky) {
-			tatScroll.stopScroll = false;
-		    if (!tatScroll.stickyIsOn && tatScroll.scrollTop > tatScroll.scrollHeight ) { 
-		    	tatScroll.sticky.classList.add('scrolled');
+		if (tat.sticky) {
+			tat.stopScroll = false;
+		    if (!tat.stickyIsOn && tat.scrollTop > tat.scrollHeight ) { 
+		    	tat.sticky.classList.add('scrolled');
 				document.body.classList.add('sticky-fixed');	   	
-				tatScroll.stickyIsOn = true;
-		    } else if (tatScroll.stickyIsOn && tatScroll.scrollTop <= tatScroll.scrollHeight) {
-		    	tatScroll.sticky.classList.remove('scrolled');
+				tat.stickyIsOn = true;
+		    } else if (tat.stickyIsOn && tat.scrollTop <= tat.scrollHeight) {
+		    	tat.sticky.classList.remove('scrolled');
 		    	document.body.classList.remove('sticky-fixed');    
-		    	tatScroll.stickyIsOn = false;
+		    	tat.stickyIsOn = false;
 		    }
 		}
 		
-		if (tatScroll.stopScroll) {
-			window.removeEventListener('scroll', tatScroll.scroll);
+		if (tat.stopScroll) {
+			window.removeEventListener('scroll', tat.scroll);
 		}
 	},
 	
