@@ -323,10 +323,11 @@ var tat = {
 			if (offset==undefined) { offset=60; }
 		let target = document.getElementById(this.dataset.scrollto);
 		if (target) {
-			target.scrollIntoView({ 
-				behavior: 'smooth',
-				block: 'start'
-			});		
+			let yCoordinate = target.getBoundingClientRect().top + window.pageYOffset;
+			window.scrollTo({
+			    top: yCoordinate - offset,
+			    behavior: 'smooth'
+			});
 		}
 	},
 	
