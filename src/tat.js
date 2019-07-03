@@ -166,9 +166,9 @@ var tat = {
 		
 		let modalContent = document.createElement('div');
 		modalContent.innerHTML = text;
-		modalContent.classList = 'modal-confirm-content';
+		modalContent.classList.add('modal-confirm-content');
 		let modalButtons = document.createElement('div');
-		modalButtons.className = 'modal-confirm';
+		modalButtons.classList.add('modal-confirm');
 		let modalButtonN = document.createElement('button');
 		modalButtonN.classList.add('button','cancel','js-modal-close');
 		modalButtonN.innerHTML = tat.lang.cancel;
