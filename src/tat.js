@@ -33,15 +33,15 @@ var tat = {
     
     setConfirmHook: function(hook) {
 	    this.modalConfirmHook = hook;
-    }
+    },
     
     setConfirmData: function(data) {
 	    this.modalConfirmData = data;
-    }    
+    },  
 	
 	setCloseHook: function(hook) {
 		this.modalCloseHook = hook;
-	}
+	},
 	
 	modalListener: function() {
 		let modals = document.querySelectorAll('.js-modal');
