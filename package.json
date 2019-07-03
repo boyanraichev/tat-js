@@ -1,6 +1,6 @@
 {
   "name": "tat-js",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Minimalistic JS web package",
   "browser": "src/tat.js",
   "scripts": {
