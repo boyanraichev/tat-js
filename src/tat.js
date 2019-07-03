@@ -1,16 +1,6 @@
 var tat = {
 	
 	modalHooks: [],
-	
-	modalConfirmHook: null,
-	modalConfirmData: null,
-	
-	modalCloseHook: {},
-	
-	lang: {
-		ok: 'OK',
-		cancel: 'Cancel',
-	},
 		
 	init: function() {
 		this.listeners();
@@ -30,18 +20,6 @@ var tat = {
 		this.addRowsListener();
 		this.delRowsListener();
     },
-    
-    setConfirmHook: function(hook) {
-	    this.modalConfirmHook = hook;
-    },
-    
-    setConfirmData: function(data) {
-	    this.modalConfirmData = data;
-    },  
-	
-	setCloseHook: function(hook) {
-		this.modalCloseHook = hook;
-	},
 	
 	modalListener: function() {
 		let modals = document.querySelectorAll('.js-modal');
@@ -162,16 +140,27 @@ var tat = {
 	confirmListener: function() { 
 		let confirms = document.querySelectorAll('.js-confirm');
 		Array.from(confirms).forEach(confirm => {
-		    confirm.addEventListener('click',function(e){
-			    e.preventDefault();
-			    let modalID = ( this.dataset.modal ? this.dataset.modal : 'modal-confirm' );
-			    let text = this.dataset.text;
-			    tat.modalConfirmData = this.dataset.confirmData;
-			    let follow = this.dataset.follow;
-			    tat.confirmPrep(modalID,text,this,follow);
-		    });
+		    confirm.addEventListener('click',tat.confirmHook);
 		});
 	},
+	
+	confirmHook: function(e) {
+		e.preventDefault();
+	    let modalID = ( this.dataset.modal ? this.dataset.modal : 'modal-confirm' );
+	    let text = this.dataset.text;
+	    tat.modalConfirmData = this.dataset.confirmData;
+	    let follow = this.dataset.follow;
+	    tat.confirmPrep(modalID,text,this,follow);
+	},
+	
+	confirmEvent: function(e) {
+	    e.preventDefault();
+	    let modalID = ( this.dataset.modal ? this.dataset.modal : 'modal-confirm' );
+	    let text = this.dataset.text;
+	    tat.modalConfirmData = this.dataset.confirmData;
+	    let follow = this.dataset.follow;
+	    tat.confirmPrep(modalID,text,this,follow);
+    },
 	
 	confirmPrep: function(modalID,text,click,follow) {
 		
@@ -470,6 +459,28 @@ var tat = {
 		return yPos;
 	}
 }
+
+Object.defineProperties(tat,{
+	'modalConfirmHook': { 
+		value: null,
+		writable: true
+	},
+	'modalConfirmData': {
+		value: null,
+		writable: true		
+	},
+	'modalCloseHook': {
+		value: {},
+		writable: true
+	},
+	'lang': {
+		value: {
+			ok: 'OK',
+			cancel: 'Cancel',
+		},
+		writable: true
+	}
+});
 
 tat.init();
 
