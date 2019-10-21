@@ -205,7 +205,9 @@ var tat = {
 		let toggle = document.getElementById(this.dataset.toggle);
 		if (toggle) {
 			this.classList.toggle('toggled');
-			toggle.classList.toggle('opened');
+			toggle.classList.toggle('active');
+			let event = new CustomEvent('toggled');
+			toggle.dispatchEvent(event);
 			let bodyClass = this.dataset.bodyClass;
 			if (bodyClass!=undefined) {
 				document.body.classList.toggle(bodyClass);
@@ -238,31 +240,35 @@ var tat = {
 	tooltipListener: function() {
 		let tooltips = document.querySelectorAll('.js-tooltip');
 		Array.from(tooltips).forEach(tooltip => {
-		    tooltip.addEventListener('mouseenter',tat.tooltipOn);
-		    tooltip.addEventListener('mouseleave',tat.tooltipOff);
-		});
-		let tooltipsFocus = document.querySelectorAll('.js-tooltip-focus');
-		Array.from(tooltipsFocus).forEach(tooltipFocus => {
-		    tooltipFocus.addEventListener('focus',tat.tooltipOn);
-		    tooltipFocus.addEventListener('blur',tat.tooltipOff);
+			switch(tooltip.dataset.trigger) {
+				case 'focus':
+					tooltipFocus.addEventListener('focus',tat.tooltipOn);
+					tooltipFocus.addEventListener('blur',tat.tooltipOff);
+					break;
+				case 'mouseover':
+				default:
+					tooltip.addEventListener('mouseenter',tat.tooltipOn);
+				    tooltip.addEventListener('mouseleave',tat.tooltipOff);
+					break;
+			}
 		});
 	},
 		
 	tooltipOn: function(event) {
 		event.preventDefault();
-		this.classList.add('tooltipped');
+		this.classList.add('tooltip-on');
 		let tooltip = document.getElementById(this.dataset.tooltip);
 		if (tooltip) {
-			tooltip.classList.add('opened');
+			tooltip.classList.add('active');
 		}
 	},
 	
 	tooltipOff: function(event) {
 		event.preventDefault();
-		this.classList.remove('tooltipped');
+		this.classList.remove('tooltip-on');
 		let tooltip = document.getElementById(this.dataset.tooltip);
 		if (tooltip) {
-			tooltip.classList.remove('opened');
+			tooltip.classList.remove('active');
 		}
 	},
 	
@@ -349,7 +355,7 @@ var tat = {
 	stickyIsOn: false,
 	stopScroll: true,
 	
-	sticky: null,
+	stickies: [],
 	inviews: [],
 
 	resizeListener: function() {
@@ -359,21 +365,25 @@ var tat = {
 	},
 	
 	resize: function() {
-        if (window.innerHeight!=tat.viewport) {
-	        tat.viewport = window.innerHeight;
-	        tat.scrollTop = window.scrollY;
-	        tat.inViewListener();
-        }
+		if (window.innerHeight!=tat.viewport) {
+		tat.viewport = window.innerHeight;
+			tat.scrollTop = window.scrollY;
+			tat.inViewListener();
+		}
 	},
 	
 	stickyListener: function() {
-		let sticky = document.querySelector('.js-sticky');
-		if (sticky) {
+		tat.stickies = [];
+		let stickies = document.querySelectorAll('.js-sticky');
+		if (stickies) {
+			tat.stickies = Array.from(stickies);
 			tat.resizeListener();
+/*
 			if (sticky.dataset.scrollheight) { 
 				this.scrollHeight = sticky.dataset.scrollheight;
 			}
 			tat.sticky = sticky;
+*/
 			window.addEventListener('scroll',tat.scroll);
 		}
 	},
@@ -418,17 +428,28 @@ var tat = {
 		
 		tat.inviews.forEach(tat.inview);
 
-		if (tat.sticky) {
+		if (tat.stickies.length > 0) {
 			tat.stopScroll = false;
-		    if (!tat.stickyIsOn && tat.scrollTop > tat.scrollHeight ) { 
-		    	tat.sticky.classList.add('scrolled');
-				document.body.classList.add('sticky-fixed');	   	
-				tat.stickyIsOn = true;
-		    } else if (tat.stickyIsOn && tat.scrollTop <= tat.scrollHeight) {
-		    	tat.sticky.classList.remove('scrolled');
-		    	document.body.classList.remove('sticky-fixed');    
-		    	tat.stickyIsOn = false;
-		    }
+			tat.stickyIsOn = false;
+			tat.stickiers.forEach(sticky => {
+				let scrollHeight = ( sticky.dataset.scrollheight ? sticky.dataset.scrollheight : 0 );
+				let stickyIsOn = sticky.classList.contains('sticked');
+				if (!stickyIsOn && tat.scrollTop > scrollHeight) {
+					sticky.classList.add('sticked');
+					stickyIsOn = true;
+				} else if (stickyIsOn && tat.scrollTop <= scrollHeight) {
+			    	sticky.classList.remove('sticked');
+			    	stickyIsOn = false;
+			    }
+			    if (stickyIsOn) {
+				    tat.stickyIsOn = true;
+			    } 
+			});
+			if (tat.stickyIsOn) {
+				document.body.classList.add('has-sticky');
+			} else {
+				document.body.classList.remove('has-sticky');    
+			}
 		}
 		
 		if (tat.stopScroll) {

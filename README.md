@@ -73,7 +73,7 @@ You can show a confirmation modal box in two ways:
 
 **Toggle on/off**
 
-Toggle an element (use CSS to style the desired behaviour, i.e. show/hide). The toggled element will receive a class .opened when ON and the handler will receive a class .toggled. Use the .js-toggle class to activate the handler.
+Toggle an element (use CSS to style the desired behaviour, i.e. show/hide). The toggled element will receive a class `.active` when ON and the handler will receive a class `.toggled`. Use the `.js-toggle` class to activate the handler.
 
 Must-fill attributes:
 data-toggle="" - the ID of the element to be toggled. 
@@ -81,9 +81,18 @@ data-toggle="" - the ID of the element to be toggled.
 Optional attributes:
 data-body-class="" - add this class on the <body> element when the element is toggled ON.
 
+Events:
+'toggled' event is sent on the target element.
+
+Example markup:
+```html
+<div id="target">Target element</div>
+<button class="js-toggle" data-toggle="target" data-body-class="has-element-toggled">Toggle link</button>
+```
+
 **Scroll**
 
-Use the .js-scroll class to an element to add a scroll-to function when this element is clicked. 
+Use the `.js-scroll` class to an element to add a scroll-to function when this element is clicked. 
 
 Must-fill attributes:
 data-scrollto="" - the id of the element to scroll to
@@ -93,7 +102,7 @@ data-offset="" - the offset from the viewport top (in pixels) to leave above the
 
 **Tabs**
 
-Use the .js-tab class to a handler to make a tab visible in a tab pane design.
+Use the `.js-tab` class to a handler to make a tab visible in a tab pane design.
 
 Must-fill attributes:
 data-tab="" - the ID of the tab to be shown. It will receive a class .active
@@ -102,10 +111,14 @@ data-wrap="" - the ID of the element containing the tabs. Each tab should have t
 
 **Tooltip**
 
-Use the .js-tooltip class to a handler to show a tooltip upon mouseover. Use the .js-tooltip-focus on an input to show the tooltip upon input focus. The handler will receive a class .tooltipped when activated.
+Use the `.js-tooltip` class to a handler to show a tooltip upon specific action. The handler will receive a class `.tooltip-on` when activated. The tooltip itself can be another element (which will receive  a class `.active` when active) or an element created programmatically with the text provided in a data attribute. 
 
-Must-fill attributes:
-data-tooltip="" -  the ID of the tooltip element to be shown. The tooltip will receive a class .opened. 
+Must-fill attributes (one of the two):
+data-tooltip="" -  the ID of the tooltip element to be shown. The tooltip will receive a class .active.
+data-tooltip-text="" -  the text content to be put in the tooltip element created dynamically.
+
+Optional attribute:
+data-trigger="" - possible options currently: mouseover, focus. Default is mouseover.
 
 **Input Started**
 
@@ -136,7 +149,7 @@ Additional scroll-related functions.
 
 ***Sticky Header***
 
-Use ".js-sticky" class on the header or other element you want to make sticky. Use CSS to actually make the element sticky - the script only adds the respective class when the page is scrolled to the set offset.
+Use ".js-sticky" class on the header or other element you want to make sticky. Use CSS to actually make the element sticky - the script only adds the class `sticked` on the element and the `has-sticky` class on the body, when the scroll position is reached.
 
 ***Element in viewport***
 
