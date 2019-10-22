@@ -313,7 +313,7 @@ var tat = {
 	delRowsListener: function() {
 		let delRows = document.querySelectorAll('.js-del-row');
 		Array.from(delRows).forEach(delRow => {
-		    delRow.addEventListener('click',tat.delRow);
+		    delRow.addEventListener('click',tat.delRowEv);
 		});
 	},
 	
@@ -326,14 +326,17 @@ var tat = {
 	delRow: function(row) {
 		let table = row.parentNode;
 		row.classList.add('fade-out');
-		setTimeout(function(){ row.remove(); }, 500);
-		if (table.dataset.maxRows > table.childElementCount && table.classList.contains('is-full')) {
-			table.classList.remove('is-full');
-			let adds = document.querySelectorAll('.js-add-row.is-full[data-table="'+table.id+'"');
-			if (adds) {
-				Array.from(adds).forEach((add) => { add.classList.remove('is-full') });
-			}
-		}
+		setTimeout(function(){ 
+			row.remove(); 
+			if (table.dataset.maxRows > table.childElementCount && table.classList.contains('is-full')) {
+				table.classList.remove('is-full');
+				let adds = document.querySelectorAll('.js-add-row.is-full[data-table="'+table.id+'"');
+				if (adds) {
+					Array.from(adds).forEach((add) => { add.classList.remove('is-full') });
+				}
+			}			
+		}, 500);
+		
 	},
 
 	scrollToListener: function() {
@@ -397,12 +400,6 @@ var tat = {
 		if (stickies) {
 			tat.stickies = Array.from(stickies);
 			tat.resizeListener();
-/*
-			if (sticky.dataset.scrollheight) { 
-				this.scrollHeight = sticky.dataset.scrollheight;
-			}
-			tat.sticky = sticky;
-*/
 			window.addEventListener('scroll',tat.scroll);
 		}
 	},
