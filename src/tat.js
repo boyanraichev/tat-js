@@ -327,7 +327,7 @@ var tat = {
 		let table = row.parentNode;
 		row.classList.add('fade-out');
 		setTimeout(function(){ row.remove(); }, 500);
-		if (table.dataset.maxRows > table.childElementCount) && table.classList.contains('is-full')) {
+		if (table.dataset.maxRows > table.childElementCount && table.classList.contains('is-full')) {
 			table.classList.remove('is-full');
 			let adds = document.querySelectorAll('.js-add-row.is-full[data-table="'+table.id+'"');
 			if (adds) {
