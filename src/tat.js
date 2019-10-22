@@ -206,12 +206,12 @@ var tat = {
 		if (toggle) {
 			this.classList.toggle('toggled');
 			toggle.classList.toggle('active');
-			let event = new CustomEvent('toggled');
-			toggle.dispatchEvent(event);
 			let bodyClass = this.dataset.bodyClass;
 			if (bodyClass!=undefined) {
 				document.body.classList.toggle(bodyClass);
 			}
+			let event = new CustomEvent('toggled');
+			toggle.dispatchEvent(event);
 		}
 	},
 
@@ -275,33 +275,40 @@ var tat = {
 	addRowsListener: function() {
 		let addRows = document.querySelectorAll('.js-add-row');
 		Array.from(addRows).forEach(addRow => {
-		    addRow.addEventListener('click',tat.addRow);
+		    addRow.addEventListener('click',tat.addRowEv);
 		});
 	},
 		
-	addRow: function(event) {
+	addRowEv: function(event) {
 		event.preventDefault();
 		let table = document.getElementById(this.dataset.table);
 		if (table) {
-			let max = table.dataset.maxRows;
-			if (max && max <= table.childElementCount) {
-				return;
-			}
-			let prototype = this.dataset.prototype;
-			let lastRow = table.querySelector('.row:last-child');
-			if (!lastRow || lastRow.dataset.key === undefined) {
-				var key = 1;
-			} else {
-				var key = parseInt(lastRow.dataset.key) + 1;
-			}
-			prototype = prototype.replace(/__key__/gi, key); 
-			table.insertAdjacentHTML('beforeend', prototype);
-			tat.delRowsListener();
-			tat.toggleListener();
-			let event = new CustomEvent('rowAdded',{ detail: key });
-			table.dispatchEvent(event);
+			tat.addRow(table,this);
 		}
 	},
+	
+	addRow: function(table,handler) {
+		let max = table.dataset.maxRows;
+		if (max && max <= table.childElementCount) {
+			return;
+		}
+		let prototype = handler.dataset.prototype;
+		let lastRow = table.querySelector('.row:last-child');
+		if (!lastRow || lastRow.dataset.key === undefined) {
+			var key = 1;
+		} else {
+			var key = parseInt(lastRow.dataset.key) + 1;
+		}
+		prototype = prototype.replace(/__key__/gi, key); 
+		table.insertAdjacentHTML('beforeend', prototype);
+		tat.delRowsListener();
+		if (max == table.childElementCount ) {
+			table.classList.add('is-full');
+			handler.classList.add('is-full');
+		}
+		let event = new CustomEvent('rowAdded',{ detail: key });
+		table.dispatchEvent(event);			
+	}, 
 	
 	delRowsListener: function() {
 		let delRows = document.querySelectorAll('.js-del-row');
@@ -310,11 +317,23 @@ var tat = {
 		});
 	},
 	
-	delRow: function(event) {
+	delRowEv: function(event) {
 		event.preventDefault();
 		let row = this.closest('.row');
+		tat.delRow(row);
+	},
+	
+	delRow: function(row) {
+		let table = row.parentNode;
 		row.classList.add('fade-out');
 		setTimeout(function(){ row.remove(); }, 500);
+		if (table.dataset.maxRows > table.childElementCount) && table.classList.contains('is-full')) {
+			table.classList.remove('is-full');
+			let adds = document.querySelectorAll('.js-add-row.is-full[data-table="'+table.id+'"');
+			if (adds) {
+				Array.from(adds).forEach((add) => { add.classList.remove('is-full') });
+			}
+		}
 	},
 
 	scrollToListener: function() {
