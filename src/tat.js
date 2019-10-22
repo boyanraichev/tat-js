@@ -447,7 +447,7 @@ var tat = {
 		if (tat.stickies.length > 0) {
 			tat.stopScroll = false;
 			tat.stickyIsOn = false;
-			tat.stickiers.forEach(sticky => {
+			tat.stickies.forEach(sticky => {
 				let scrollHeight = ( sticky.dataset.scrollheight ? sticky.dataset.scrollheight : 0 );
 				let stickyIsOn = sticky.classList.contains('sticked');
 				if (!stickyIsOn && tat.scrollTop > scrollHeight) {
