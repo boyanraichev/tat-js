@@ -242,8 +242,8 @@ var tat = {
 		Array.from(tooltips).forEach(tooltip => {
 			switch(tooltip.dataset.trigger) {
 				case 'focus':
-					tooltipFocus.addEventListener('focus',tat.tooltipOn);
-					tooltipFocus.addEventListener('blur',tat.tooltipOff);
+					tooltip.addEventListener('focus',tat.tooltipOn);
+					tooltip.addEventListener('blur',tat.tooltipOff);
 					break;
 				case 'mouseover':
 				default:
