@@ -16,6 +16,7 @@ var tat = {
 		this.tooltipListener();
 		this.scrollToListener();
 		this.confirmListener();
+		this.validationListener();
 		this.inputListener();
 		this.addRowsListener();
 		this.delRowsListener();
@@ -360,15 +361,65 @@ var tat = {
 		}
 	},
 	
+	validationListener: function() {
+		let forms = document.querySelectorAll('.js-validate');
+		Array.from(forms).forEach(form => {
+			form.noValidate = true;
+		    form.addEventListener('submit',tat.validateFormHook);
+		});
+	},
+	
 	inputListener: function() {
 		let inputs = document.querySelectorAll('input, select, textarea');
 		Array.from(inputs).forEach(input => {
-		    input.addEventListener('focus',function(){
+		    input.addEventListener('input',function(){
 			    this.classList.add('has-input');
+			    this.classList.remove('is-invalid');
 		    },
 		    {'once':true});
 		});
 	},
+	
+	validateFormHook: function(e) {
+		if(!tat.validateForm(this)) {
+			e.preventDefault();	
+		}
+	},
+	
+	validateForm: function(form) {
+		let validates = true;
+		let inputs = form.querySelectorAll('input:not([type="hidden"]):not(.no-validate), select:not(.no-validate), textarea:not(.no-validate)');
+		
+		Array.from(inputs).forEach(input => { 
+			input.classList.remove('is-invalid');
+			input.setCustomValidity("");
+			input.checkValidity();
+			if (!input.validity.valid) {
+				validates = false; 
+				if (input.validity.badInput && input.dataset.validationType) {
+					input.setCustomValidity(input.dataset.validationType);
+				} else if (input.validity.valueMissing) {
+					let msg = input.dataset.validationRequired || tat.lang.validationRequired;
+					input.setCustomValidity(msg);
+				} else if (input.validity.typeMismatch && input.dataset.validationType) {
+					input.setCustomValidity(input.dataset.validationType);
+				} else if (input.validity.tooShort && input.dataset.validationMinlength) { 
+					input.setCustomValidity(input.dataset.validationMinlength);	
+				} else if ((input.validity.rangeOverflow || input.validity.rangeUnderflow || input.validity.stepMismatch) && input.dataset.validationRange) { 
+					input.setCustomValidity(input.dataset.validationRange);		
+				} else if (input.validity.patternMismatch && input.dataset.validationPattern) { 
+					input.setCustomValidity(input.dataset.validationPattern);		
+				} else {
+// 					input.reportValidity();
+				}
+				input.addEventListener('input',() => { input.setCustomValidity(""); }, {'once':true});
+			}
+			input.reportValidity();
+		});
+		form.classList.add('was-validated');
+		
+		return validates;
+	},	
 	
 	scrollHeight: 0,
 	viewport: null,

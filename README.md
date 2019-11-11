@@ -16,21 +16,13 @@ This package aims to:
 Get Started
 -----------
 
-If you are using npm or another package manager you can install by including `tat-js` in your dependencies and then using `require('tat')` in your script.
+If you are using npm or another package manager you can install by including `tat-js` in your dependencies and then using `require('tat')` or `import {} from 'tat.js'` in your script. This will include the babel EC5 transpiled version of the package.
 
-Alternatively, if you downloaded the source from GitHub, you can include the file directly, using one of the two versions:
-  a) tat.min.js - this is the EC6 version, minified.
-  b) tat.transpiled.min.js - this is the EC5 transpiled version for better browser support.
-
-If you are not transpiling/compiling your scripts, you would have to include Polyfill.
+If you need better support, you would have to include polyfills, i.e.:
 
 ```html
 <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
 ```
-
-TATscroll is an optional script that adds two features related to scrolling.
-  a) tatScroll.min.js - this is the EC6 version, minified.
-  b) tatScroll.transpiled.min.js - this is the EC5 version for better browser support.
   
 **Hooks**
 
@@ -120,9 +112,16 @@ data-tooltip-text="" -  the text content to be put in the tooltip element create
 Optional attribute:
 data-trigger="" - possible options currently: mouseover, focus. Default is mouseover.
 
-**Input Started**
+**Form validation**
 
-All input, select and textarea elements on your page will receive a class .has-input when focused for the first time. This allows you to use the css :invalid selector to visualise invalid input only after the user has interacted with this field. 
+All input, select and textarea elements on your page will receive a class `.has-input` when they receive input for the first time. This allows you to use the css `:invalid` selector to visualise invalid input only after the user has interacted with this field. 
+
+Further form validation is possible with the addition of `.js-validate` class on the form. This will add a `.was-validated` class upon submit, allowing you to further use css `:invalid` and `:valid` selectors to style the inputs. Additionally, you can easily set custom validation messages with the following data attributes:
+data-validation-required="" - for empty required field
+data-validation-type="" - for wrong type value (i.e. not an email)
+data-validation-minlength="" - for value that is too short
+data-validation-range="" - for numeric value that is not respecting the min, max or step values
+data-validation-pattern="" - for when a pattern has not been matched
 
 **Table rows**
 
