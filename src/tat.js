@@ -372,7 +372,7 @@ var tat = {
 	inputListener: function() {
 		let inputs = document.querySelectorAll('input:not([type="hidden"]), select, textarea');
 		Array.from(inputs).forEach(input => {
-			let event = ( (input.tagName == 'SELECT' || input.type == 'checkbox' || input.type == 'radio' ) ? 'input' : 'blur');
+			let event = ( (input.tagName == 'SELECT' || input.type == 'checkbox' || input.type == 'radio' || input.classList.contains('is-invalid') ) ? 'input' : 'blur');
 		    input.addEventListener(event,function(){
 			    this.classList.add('has-input');
 			    this.classList.remove('is-invalid');
