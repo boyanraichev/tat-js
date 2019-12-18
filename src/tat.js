@@ -69,7 +69,7 @@ var tat = {
 		modalContentDiv.prepend(modalCloseDiv);
 		modal.classList.add('fade-in');
 
-		modal.addEventListener('click',tat.modalCloseEv,{'capture':false});
+		modal.addEventListener('mousedown',tat.modalCloseEv,{'capture':false});
 		tat.modalCloseListeners();
 		tat.modalConfirmListeners();
 		tat.confirmListener();
