@@ -1,6 +1,8 @@
 var tat = {
 	
 	modalHooks: [],
+	
+	modalWillClose: false, 
 		
 	init: function() {
 		this.listeners();
@@ -69,7 +71,8 @@ var tat = {
 		modalContentDiv.prepend(modalCloseDiv);
 		modal.classList.add('fade-in');
 
-		modal.addEventListener('mousedown',tat.modalCloseEv,{'capture':false});
+		modal.addEventListener('mousedown',tat.modalCloseMouseEv,{'capture':false});
+		modal.addEventListener('click',tat.modalCloseEv,{'capture':false});
 		tat.modalCloseListeners();
 		tat.modalConfirmListeners();
 		tat.confirmListener();
@@ -106,8 +109,17 @@ var tat = {
 		});
 	},
 	
+	modalCloseMouseEv: function(event) {
+		tat.modalWillClose = event.target;
+	},
+	
 	modalCloseEv: function(event) {
 		if (event.target !== this) { return; }
+		if (!tat.modalWillClose) { return; }
+		if (tat.modalWillClose != event.target) {
+			tat.modalWillClose = false;
+			return;
+		}
 		event.stopPropagation();
 		event.preventDefault();
 		tat.modalClose(this);
