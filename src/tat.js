@@ -427,7 +427,9 @@ var tat = {
 				}
 				input.addEventListener('input',() => { input.setCustomValidity(""); }, {'once':true});
 			}
-			input.reportValidity();
+			if ( HTMLFormElement.prototype.reportValidity ) {
+				input.reportValidity();
+			}
 		});
 		form.classList.add('was-validated');
 		
