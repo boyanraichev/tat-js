@@ -192,7 +192,7 @@ var tat = {
 		modalButtons.prepend(modalButtonY);
 		modalContent.append(modalButtons);
 		if (follow) {
-			var href = this.href;
+			var href = click.href;
 			modalButtonY.addEventListener('click',function() { 
 				window.location = href;
 			});
