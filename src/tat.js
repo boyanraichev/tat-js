@@ -36,17 +36,18 @@ var tat = {
 		let modalClicked = this;
 		let modalID = modalClicked.dataset.modal;
 		let modalContent = modalClicked.dataset.modalContent;
+		let modalTitle = modalClicked.dataset.modalTitle;
 		if (modalContent==undefined || modalContent.length < 1) { 
 			let modalGet = document.getElementById(this.dataset.modalGet);
 			if (modalGet) { 
 				modalContent = modalGet.innerHTML;
 			}
 		}
-		tat.modal(modalID,modalContent,modalClicked); 
+		tat.modal(modalID,modalContent,modalTitle,modalClicked); 
 	},
 
 	
-	modal: function(modalID,modalContent,elementClicked) {
+	modal: function(modalID,modalContent,modalTitle,elementClicked) {
 		let modal = document.querySelector('.modal');
 		if (!modal) {
 			modal = document.createElement('div');
@@ -66,6 +67,14 @@ var tat = {
 			modalContentDiv.innerHTML = modalContent;	
 		}
 		document.body.classList.add('modal-open');
+		
+		if(modalTitle!=undefined && modalTitle.length > 0) {
+			let modalTitleDiv = document.createElement('div');
+			modalTitleDiv.innerHTML = modalTitle;
+			modalTitleDiv.classList.add('modal-title');
+			modalContentDiv.prepend(modalTitleDiv);
+		}
+		
 		let modalCloseDiv = document.createElement('div');
 		modalCloseDiv.classList.add('modal-close','js-modal-close');
 		modalContentDiv.prepend(modalCloseDiv);
@@ -191,13 +200,14 @@ var tat = {
 		modalButtonY.innerHTML = tat.lang.ok;
 		modalButtons.prepend(modalButtonY);
 		modalContent.append(modalButtons);
+		let modalTitle = click.dataset.modalTitle;
 		if (follow) {
 			var href = click.href;
 			modalButtonY.addEventListener('click',function() { 
 				window.location = href;
 			});
 		}
-		tat.modal(modalID,modalContent,click);
+		tat.modal(modalID,modalContent,modalTitle,click);
 	},
 	
 	confirm: function(modalID,modalContent,hook,data) {
