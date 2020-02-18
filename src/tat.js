@@ -411,6 +411,7 @@ var tat = {
 	
 	validateForm: function(form) {
 		let validates = true;
+		let hasReported = false;
 		let inputs = form.querySelectorAll('input:not([type="hidden"]):not(.no-validate), select:not(.no-validate), textarea:not(.no-validate)');
 		
 		Array.from(inputs).forEach(input => { 
@@ -436,9 +437,11 @@ var tat = {
 // 					input.reportValidity();
 				}
 				input.addEventListener('input',() => { input.setCustomValidity(""); }, {'once':true});
-			}
-			if ( HTMLFormElement.prototype.reportValidity ) {
-				input.reportValidity();
+								
+				if ( HTMLFormElement.prototype.reportValidity && !hasReported) {
+					input.reportValidity();
+					hasReported = true;
+				}
 			}
 		});
 		form.classList.add('was-validated');
