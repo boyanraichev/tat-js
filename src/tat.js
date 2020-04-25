@@ -79,9 +79,12 @@ var tat = {
 		modalCloseDiv.classList.add('modal-close','js-modal-close');
 		modalContentDiv.prepend(modalCloseDiv);
 		modal.classList.add('fade-in');
-
-		modal.addEventListener('mousedown',tat.modalCloseMouseEv,{'capture':false});
-		modal.addEventListener('click',tat.modalCloseEv,{'capture':false});
+		
+		if(elementClicked.dataset.backdrop==undefined || elementClicked.dataset.backdrop != 'static') {
+			modal.addEventListener('mousedown',tat.modalCloseMouseEv,{'capture':false});
+			modal.addEventListener('click',tat.modalCloseEv,{'capture':false});
+		}
+		
 		tat.modalCloseListeners();
 		tat.modalConfirmListeners();
 		tat.confirmListener();
