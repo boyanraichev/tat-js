@@ -80,8 +80,8 @@ var tat = {
 		modalContentDiv.prepend(modalCloseDiv);
 		modal.classList.add('fade-in');
 		
+		modal.addEventListener('mousedown',tat.modalCloseMouseEv,{'capture':false});
 		if(elementClicked.dataset.backdrop==undefined || elementClicked.dataset.backdrop != 'static') {
-			modal.addEventListener('mousedown',tat.modalCloseMouseEv,{'capture':false});
 			modal.addEventListener('click',tat.modalCloseEv,{'capture':false});
 		}
 		
