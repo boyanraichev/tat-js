@@ -81,7 +81,7 @@ var tat = {
 		modal.classList.add('fade-in');
 		
 		modal.addEventListener('mousedown',tat.modalCloseMouseEv,{'capture':false});
-		if(elementClicked.dataset.backdrop==undefined || elementClicked.dataset.backdrop != 'static') {
+		if(!elementClicked || elementClicked.dataset.backdrop==undefined || elementClicked.dataset.backdrop != 'static') {
 			modal.addEventListener('click',tat.modalCloseEv,{'capture':false});
 		}
 		
