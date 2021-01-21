@@ -6,13 +6,13 @@ var tat = {
 		
 	init: function() {
 		this.listeners();
-	    this.modalOnListener();
-	    this.stickyListener();
+		this.modalOnListener();
+		this.stickyListener();
 		this.inViewListener();
 	},
-    
-    listeners: function() {
-	    this.modalListener();
+	
+	listeners: function() {
+		this.modalListener();
 		this.toggleListener();
 		this.tabsListener();
 		this.tooltipListener();
@@ -22,16 +22,16 @@ var tat = {
 		this.inputListener();
 		this.addRowsListener();
 		this.delRowsListener();
-    },
+	},
 	
 	modalListener: function() {
 		let modals = document.querySelectorAll('.js-modal');
 		Array.from(modals).forEach(modal => {
-		    modal.addEventListener('click',tat.modalShow);
+			modal.addEventListener('click',tat.modalShow);
 		});
-    },
-    
-    modalShow: function(event) {
+	},
+	
+	modalShow: function(event) {
 		event.preventDefault();
 		let modalClicked = this;
 		let modalID = modalClicked.dataset.modal;
@@ -91,33 +91,33 @@ var tat = {
 		tat.inputListener();
 		
 		tat.modalHooks.forEach(function(modalHook,i) {		    
-	    	if (modalHook.id == modalID) {
-	    		if (typeof modalHook.hook == 'function') {
-		    		modalHook.hook(i,elementClicked);
-		    	}
-	    	}
-	    });
+			if (modalHook.id == modalID) {
+				if (typeof modalHook.hook == 'function') {
+					modalHook.hook(i,elementClicked);
+				}
+			}
+		});
 	},
 	
 	modalConfirmListeners: function() {
 		let confirms = document.querySelectorAll('.js-modal-confirm');
 		Array.from(confirms).forEach(confirm => {
-		    confirm.addEventListener('click',tat.modalConfirm,{'once':true});
+			confirm.addEventListener('click',tat.modalConfirm,{'once':true});
 		});
 	},
 	
 	modalConfirm: function() {
 		if (typeof tat.modalConfirmHook == 'function') {
-    		tat.modalConfirmHook(tat.modalConfirmData);
-    	} else {
-	    	tat.modalClose();
-    	}
+			tat.modalConfirmHook(tat.modalConfirmData);
+		} else {
+			tat.modalClose();
+		}
 	},
 	
 	modalCloseListeners: function() {
 		let closes = document.querySelectorAll('.js-modal-close');
 		Array.from(closes).forEach(close => {
-		    close.addEventListener('click',tat.modalCloseEv);
+			close.addEventListener('click',tat.modalCloseEv);
 		});
 	},
 	
@@ -139,14 +139,14 @@ var tat = {
 	
 	modalClose: function(el) {	
 		if (typeof tat.modalCloseHook == 'function') {
-    		tat.modalCloseHook(el);
-    	} else {
+			tat.modalCloseHook(el);
+		} else {
 			let modal = document.querySelector('.modal');
 			modal.classList.remove('fade-in');
 			modal.classList.add('fade-out');
 			setTimeout(function(){ modal.remove(); }, 500);
-		    document.body.classList.remove('modal-open');
-    		tat.modalConfirmHook = null;
+			document.body.classList.remove('modal-open');
+			tat.modalConfirmHook = null;
 			tat.modalConfirmData = null;
 		}
 		tat.modalCloseHook = {};
@@ -157,35 +157,35 @@ var tat = {
 		if (modalOn) {
 			let delay = parseInt(modalOn.dataset.delay) || 0;
 			setTimeout(function() {
-		    	modalOn.click();
-		    }, delay);
+				modalOn.click();
+			}, delay);
 		}
 	},
 	
 	confirmListener: function() { 
 		let confirms = document.querySelectorAll('.js-confirm');
 		Array.from(confirms).forEach(confirm => {
-		    confirm.addEventListener('click',tat.confirmHook);
+			confirm.addEventListener('click',tat.confirmHook);
 		});
 	},
 	
 	confirmHook: function(e) {
 		e.preventDefault();
-	    let modalID = ( this.dataset.modal ? this.dataset.modal : 'modal-confirm' );
-	    let text = this.dataset.text;
-	    tat.modalConfirmData = this.dataset.confirmData;
-	    let follow = this.dataset.follow;
-	    tat.confirmPrep(modalID,text,this,follow);
+		let modalID = ( this.dataset.modal ? this.dataset.modal : 'modal-confirm' );
+		let text = this.dataset.text;
+		tat.modalConfirmData = this.dataset.confirmData;
+		let follow = this.dataset.follow;
+		tat.confirmPrep(modalID,text,this,follow);
 	},
 	
 	confirmEvent: function(e) {
-	    e.preventDefault();
-	    let modalID = ( this.dataset.modal ? this.dataset.modal : 'modal-confirm' );
-	    let text = this.dataset.text;
-	    tat.modalConfirmData = this.dataset.confirmData;
-	    let follow = this.dataset.follow;
-	    tat.confirmPrep(modalID,text,this,follow);
-    },
+		e.preventDefault();
+		let modalID = ( this.dataset.modal ? this.dataset.modal : 'modal-confirm' );
+		let text = this.dataset.text;
+		tat.modalConfirmData = this.dataset.confirmData;
+		let follow = this.dataset.follow;
+		tat.confirmPrep(modalID,text,this,follow);
+	},
 	
 	confirmPrep: function(modalID,text,click,follow) {
 		
@@ -222,7 +222,7 @@ var tat = {
 	toggleListener: function() {
 		let toggles = document.querySelectorAll('.js-toggle');
 		Array.from(toggles).forEach(toggle => {
-		    toggle.addEventListener('click',tat.toggle);
+			toggle.addEventListener('click',tat.toggle);
 		});
 	},
 
@@ -244,7 +244,7 @@ var tat = {
 	tabsListener: function() {
 		let tabs = document.querySelectorAll('.js-tab');
 		Array.from(tabs).forEach(tab => {
-		    tab.addEventListener('click',tat.tabs);
+			tab.addEventListener('click',tat.tabs);
 		});
 	},
 	
@@ -252,12 +252,12 @@ var tat = {
 		event.preventDefault();
 		let menuTabs = document.querySelectorAll('#'+this.dataset.menu+' .js-tab.active');
 		Array.from(menuTabs).forEach(menuTab => {
-		    menuTab.classList.remove('active');
+			menuTab.classList.remove('active');
 		});
 		this.classList.add('active');
 		let wrapTabs = document.querySelectorAll('#'+this.dataset.wrap+' .tab.active');
 		Array.from(wrapTabs).forEach(wrapTab => {
-		    wrapTab.classList.remove('active');
+			wrapTab.classList.remove('active');
 		});
 		let tab = document.getElementById(this.dataset.tab);
 		tab.classList.add('active');
@@ -274,7 +274,7 @@ var tat = {
 				case 'mouseover':
 				default:
 					tooltip.addEventListener('mouseenter',tat.tooltipOn);
-				    tooltip.addEventListener('mouseleave',tat.tooltipOff);
+					tooltip.addEventListener('mouseleave',tat.tooltipOff);
 					break;
 			}
 		});
@@ -301,7 +301,7 @@ var tat = {
 	addRowsListener: function() {
 		let addRows = document.querySelectorAll('.js-add-row');
 		Array.from(addRows).forEach(addRow => {
-		    addRow.addEventListener('click',tat.addRowEv);
+			addRow.addEventListener('click',tat.addRowEv);
 		});
 	},
 		
@@ -339,7 +339,7 @@ var tat = {
 	delRowsListener: function() {
 		let delRows = document.querySelectorAll('.js-del-row');
 		Array.from(delRows).forEach(delRow => {
-		    delRow.addEventListener('click',tat.delRowEv);
+			delRow.addEventListener('click',tat.delRowEv);
 		});
 	},
 	
@@ -368,7 +368,7 @@ var tat = {
 	scrollToListener: function() {
 		let scrolls = document.querySelectorAll('.js-scroll');
 		Array.from(scrolls).forEach(scroll => {
-		    scroll.addEventListener('click',tat.scrollTo);
+			scroll.addEventListener('click',tat.scrollTo);
 		});
 	},
 	
@@ -380,8 +380,8 @@ var tat = {
 		if (target) {
 			let yCoordinate = target.getBoundingClientRect().top + window.pageYOffset;
 			window.scrollTo({
-			    top: yCoordinate - offset,
-			    behavior: 'smooth'
+				top: yCoordinate - offset,
+				behavior: 'smooth'
 			});
 		}
 	},
@@ -390,7 +390,7 @@ var tat = {
 		let forms = document.querySelectorAll('.js-validate');
 		Array.from(forms).forEach(form => {
 			form.noValidate = true;
-		    form.addEventListener('submit',tat.validateFormHook);
+			form.addEventListener('submit',tat.validateFormHook);
 		});
 	},
 	
@@ -398,11 +398,11 @@ var tat = {
 		let inputs = document.querySelectorAll('input:not([type="hidden"]), select, textarea');
 		Array.from(inputs).forEach(input => {
 			let event = ( (input.tagName == 'SELECT' || input.type == 'checkbox' || input.type == 'radio' || input.classList.contains('is-invalid') ) ? 'input' : 'blur');
-		    input.addEventListener(event,function(){
-			    this.classList.add('has-input');
-			    this.classList.remove('is-invalid');
-		    },
-		    {'once':true});
+			input.addEventListener(event,function(){
+				this.classList.add('has-input');
+				this.classList.remove('is-invalid');
+			},
+			{'once':true});
 		});
 	},
 	
@@ -452,7 +452,7 @@ var tat = {
 		return validates;
 	},	
 	
-	scrollHeight: 0,
+	// scrollHeight: 0,
 	viewport: null,
 	scrollTop: null, 
 	
@@ -470,10 +470,11 @@ var tat = {
 	
 	resize: function() {
 		if (window.innerHeight!=tat.viewport) {
-		tat.viewport = window.innerHeight;
+			tat.viewport = window.innerHeight;
 			tat.scrollTop = window.scrollY;
 			tat.inViewListener();
 		}
+		tat.stickyTouchRecalc();
 	},
 	
 	stickyListener: function() {
@@ -481,16 +482,25 @@ var tat = {
 		let stickies = document.querySelectorAll('.js-sticky');
 		if (stickies) {
 			tat.stickies = Array.from(stickies);
+			tat.stickyTouchRecalc();
 			tat.resizeListener();
 			window.addEventListener('scroll',tat.scroll);
 		}
 	},
-    
-    inViewListener: function() {
-	    tat.inviews = [];
-	    let inviews = document.querySelectorAll('.js-inview');
-	    if (inviews) {
-		    tat.inviews = Array.from(inviews);
+	
+	stickyTouchRecalc: function() {
+		tat.stickies.forEach(sticky => {
+			if (sticky.dataset.ontouch!=undefined) {
+				sticky.dataset.scrollheight = tat.scrollPosition(sticky);
+			}
+		});
+	},
+	
+	inViewListener: function() {
+		tat.inviews = [];
+		let inviews = document.querySelectorAll('.js-inview');
+		if (inviews) {
+			tat.inviews = Array.from(inviews);
 			tat.resizeListener();
 			tat.scrollListener();
 		}
@@ -530,18 +540,21 @@ var tat = {
 			tat.stopScroll = false;
 			tat.stickyIsOn = false;
 			tat.stickies.forEach(sticky => {
-				let scrollHeight = ( sticky.dataset.scrollheight ? sticky.dataset.scrollheight : 0 );
+				let scrollHeight = ( sticky.dataset.scrollheight ? parseInt(sticky.dataset.scrollheight) : 0 );
+				if (sticky.dataset.offset != undefined) {
+					scrollHeight -= parseInt(sticky.dataset.offset);
+				}
 				let stickyIsOn = sticky.classList.contains('sticked');
 				if (!stickyIsOn && tat.scrollTop > scrollHeight) {
 					sticky.classList.add('sticked');
 					stickyIsOn = true;
 				} else if (stickyIsOn && tat.scrollTop <= scrollHeight) {
-			    	sticky.classList.remove('sticked');
-			    	stickyIsOn = false;
-			    }
-			    if (stickyIsOn) {
-				    tat.stickyIsOn = true;
-			    } 
+					sticky.classList.remove('sticked');
+					stickyIsOn = false;
+				}
+				if (stickyIsOn) {
+					tat.stickyIsOn = true;
+				} 
 			});
 			if (tat.stickyIsOn) {
 				document.body.classList.add('has-sticky');
