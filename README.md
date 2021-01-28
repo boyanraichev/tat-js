@@ -152,4 +152,4 @@ Use ".js-sticky" class on the header or other element you want to make sticky. U
 
 ***Element in viewport***
 
-Use *js-inview* class on an element and when the element is scrolled into the viewport it will gain the *in-viewport* class.
+Use *js-inview* class on an element and when the element is scrolled into the viewport it will gain the *in-viewport* class. Additionally, an `inView` event is fired everytime the element enters the viewport. The default entrance point is at the bottom of the screen, but you can apply an offset `data-offset="0.5"` with 0 being bottom of the screen and 1 being the top of the screen.
