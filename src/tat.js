@@ -516,7 +516,6 @@ var tat = {
 			scrollMin = scrollElement - ( tat.viewport * (1 - parseFloat(el.dataset.offset) ) );
 			scrollMax = scrollElement + el.offsetHeight - ( tat.viewport * (1 - parseFloat(el.dataset.offset) ) );
 		}
-		console.log(el.id,scrollElement,scrollMin,scrollMax,el.offsetHeight)
 		if (tat.scrollTop > scrollMin && tat.scrollTop < scrollMax) {
 			if (el.dataset.inview == undefined || el.dataset.inview == 0) {
 				el.dataset.inview = 1;
