@@ -228,6 +228,7 @@ var tat = {
 
 	toggle: function(event) {
 		event.preventDefault();
+		event.stopPropagation();
 		let toggle = document.getElementById(this.dataset.toggle);
 		if (toggle) {
 			this.classList.toggle('toggled');
@@ -238,6 +239,24 @@ var tat = {
 			}
 			let event = new CustomEvent('toggled');
 			toggle.dispatchEvent(event);
+			if (this.dataset.type == 'dropdown') {
+				if (this.classList.contains('toggled')) {
+					if (tat.dropdown && tat.dropdown.dataset.toggle != this.dataset.toggle) {
+						tat.closeDropdown();
+					}
+					tat.dropdown = this;
+					document.addEventListener('click',tat.closeDropdown,{once:true});
+				} else {
+					console.log('close hujnq');
+					document.removeEventListener('click',tat.closeDropdown);
+				}
+			}
+		}
+	},
+
+	closeDropdown: function(e) {
+		if (tat.dropdown) {
+			tat.dropdown.dispatchEvent(new Event('click'));
 		}
 	},
 
