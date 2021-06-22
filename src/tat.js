@@ -247,7 +247,7 @@ var tat = {
 					tat.dropdown = this;
 					document.addEventListener('click',tat.closeDropdown,{once:true});
 				} else {
-					console.log('close hujnq');
+					tat.dropdown = null;
 					document.removeEventListener('click',tat.closeDropdown);
 				}
 			}
@@ -257,6 +257,7 @@ var tat = {
 	closeDropdown: function(e) {
 		if (tat.dropdown) {
 			tat.dropdown.dispatchEvent(new Event('click'));
+			tat.dropdown = null;
 		}
 	},
 
