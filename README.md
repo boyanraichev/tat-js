@@ -17,12 +17,6 @@ Get Started
 -----------
 
 If you are using npm or another package manager you can install by including `tat-js` in your dependencies and then using `require('tat')` or `import {} from 'tat.js'` in your script. This will include the babel EC5 transpiled version of the package.
-
-If you need better support, you would have to include polyfills, i.e.:
-
-```html
-<script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
-```
   
 **Hooks**
 
