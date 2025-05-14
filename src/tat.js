@@ -203,7 +203,7 @@ var tat = {
 		modalButtonY.innerHTML = tat.lang.ok;
 		modalButtons.prepend(modalButtonY);
 		modalContent.append(modalButtons);
-		let modalTitle = click.dataset.modalTitle;
+		let modalTitle = click?.dataset?.modalTitle ?? '';
 		if (follow) {
 			var href = click.href;
 			modalButtonY.addEventListener('click',function() {
